@@ -74,6 +74,7 @@
     </footer>
 
     <script>
+        // قراءة الإعدادات أو تركها فارغة تماماً
         let settings = JSON.parse(localStorage.getItem('sch_settings')) || { 
             name: '', 
             days: '5',
@@ -83,7 +84,7 @@
             footerTheme: 'bg-slate-800 text-slate-300'
         };
 
-        // تعبئة الحقول بالبيانات المخزنة إن وجدت، وإلا تركها فارغة
+        // تعبئة الحقول بالقيم المخزنة (إذا كانت فارغة ستكون فارغة تماماً)
         document.getElementById('schoolName').value = settings.name || '';
         document.getElementById('schoolDays').value = settings.days || '5';
         document.getElementById('dailyClasses').value = settings.dailyClasses || 7;
@@ -102,7 +103,7 @@
         function saveSettings(event) {
             event.preventDefault();
             settings.name = document.getElementById('schoolName').value;
-            settings.days = document.getElementById('schoolDays').value;
+            settings.days = document.getElementById('schoolDays'].value;
             settings.dailyClasses = document.getElementById('dailyClasses').value;
             
             localStorage.setItem('sch_settings', JSON.stringify(settings));
@@ -115,7 +116,12 @@
 
         function clearData() {
             if(confirm('هل أنت متأكد من رغبتك في حذف وحفظ البيانات؟')) {
-                localStorage.removeItem('sch_settings');
+                // تفريغ الـ localStorage بالكامل أو إعادة تعيينه لقيم فارغة
+                settings.name = '';
+                settings.days = '5';
+                settings.dailyClasses = 7;
+                localStorage.setItem('sch_settings', JSON.stringify(settings));
+                
                 document.getElementById('schoolName').value = '';
                 document.getElementById('schoolDays').value = '5';
                 document.getElementById('dailyClasses').value = 7;
