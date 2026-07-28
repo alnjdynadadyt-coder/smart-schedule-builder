@@ -21,14 +21,14 @@
                 </a>
                 <h1 class="text-xl font-bold">⚙️ إعدادات المدرسة</h1>
             </div>
-            <span id="schoolNameHeader" class="text-sm opacity-80"></span>
+            <span id="schoolNameHeader" class="text-sm font-semibold opacity-90"></span>
         </div>
     </header>
 
     <!-- Main Form Content -->
     <main class="container mx-auto px-4 py-8 max-w-xl flex-grow">
         <div id="cardContainer" class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md">
-            <h2 class="text-lg font-bold mb-4 border-b pb-2 border-white/20">البيانات الأساسية ونظام الدوام</h2>
+            <h2 class="text-lg font-bold mb-4 border-b pb-2 border-white/25">البيانات الأساسية ونظام الدوام</h2>
             
             <form id="settingsForm" onsubmit="saveSettings(event)" class="space-y-5">
                 <div>
@@ -38,7 +38,7 @@
 
                 <div>
                     <label class="block text-sm font-semibold mb-2">أيام الدوام الأسبوعي:</label>
-                    <select id="schoolDays" class="w-full px-4 py-2.5 rounded-xl bg-slate-800 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-white/50">
+                    <select id="schoolDays" class="w-full px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-white/50">
                         <option value="5">5 أيام (الأحد إلى الخميس)</option>
                         <option value="6">6 أيام (السبت إلى الخميس)</option>
                     </select>
@@ -60,7 +60,7 @@
             </form>
             
             <div id="saveAlert" class="mt-4 hidden p-3 bg-emerald-500/30 border border-emerald-400 text-emerald-100 rounded-xl text-center text-sm">
-                تم حفظ الإعدادات وتحديث اسم المدرسة بنجاح!
+                تم حفظ الإعدادات بنجاح!
             </div>
             <div id="clearAlert" class="mt-4 hidden p-3 bg-rose-500/30 border border-rose-400 text-rose-100 rounded-xl text-center text-sm">
                 تم حذف وتفريغ جميع البيانات بنجاح!
@@ -74,36 +74,38 @@
     </footer>
 
     <script>
-        // قراءة الإعدادات أو تركها فارغة تماماً
+        // تحميل الإعدادات والثيمات المخزنة
         let settings = JSON.parse(localStorage.getItem('sch_settings')) || { 
             name: '', 
             days: '5',
-            dailyClasses: 7,
-            pageTheme: 'bg-indigo-900 text-white',
-            cardTheme: 'bg-white/10 border-white/20 text-white',
-            footerTheme: 'bg-slate-800 text-slate-300'
+            dailyClasses: 7
         };
 
-        // تعبئة الحقول بالقيم المخزنة (إذا كانت فارغة ستكون فارغة تماماً)
+        // استرجاع الثيم العام المخزن من الصفحة الرئيسية إن وجد
+        let savedTheme = localStorage.getItem('school_theme');
+
+        function applyTheme() {
+            if (savedTheme) {
+                try {
+                    let themeData = JSON.parse(savedTheme);
+                    if(themeData.page) document.getElementById('pageBody').className = `${themeData.page} min-h-screen flex flex-col justify-between transition-colors duration-300`;
+                    if(themeData.card) document.getElementById('cardContainer').className = `p-6 rounded-2xl shadow-xl border backdrop-blur-md ${themeData.card}`;
+                    if(themeData.footer) document.getElementById('mainFooter').className = `${themeData.footer} border-t border-white/10 py-4 text-center text-sm transition-colors duration-300`;
+                } catch(e) {}
+            }
+        }
+        applyTheme();
+
+        // تعبئة الحقول بالقيم المخزنة فعلياً
         document.getElementById('schoolName').value = settings.name || '';
         document.getElementById('schoolDays').value = settings.days || '5';
         document.getElementById('dailyClasses').value = settings.dailyClasses || 7;
         document.getElementById('schoolNameHeader').innerText = settings.name || '';
 
-        // تطبيق الثيم الشامل المحفوظ
-        function applyTheme() {
-            if(settings.pageTheme) {
-                document.getElementById('pageBody').className = `${settings.pageTheme} min-h-screen flex flex-col justify-between transition-colors duration-300`;
-                document.getElementById('cardContainer').className = `p-6 rounded-2xl shadow-xl border backdrop-blur-md ${settings.cardTheme || 'bg-white/10 border-white/20 text-white'}`;
-                document.getElementById('mainFooter').className = `${settings.footerTheme || 'bg-slate-800 text-slate-300'} border-t border-white/10 py-4 text-center text-sm transition-colors duration-300`;
-            }
-        }
-        applyTheme();
-
         function saveSettings(event) {
             event.preventDefault();
             settings.name = document.getElementById('schoolName').value;
-            settings.days = document.getElementById('schoolDays'].value;
+            settings.days = document.getElementById('schoolDays').value;
             settings.dailyClasses = document.getElementById('dailyClasses').value;
             
             localStorage.setItem('sch_settings', JSON.stringify(settings));
@@ -116,12 +118,9 @@
 
         function clearData() {
             if(confirm('هل أنت متأكد من رغبتك في حذف وحفظ البيانات؟')) {
-                // تفريغ الـ localStorage بالكامل أو إعادة تعيينه لقيم فارغة
-                settings.name = '';
-                settings.days = '5';
-                settings.dailyClasses = 7;
-                localStorage.setItem('sch_settings', JSON.stringify(settings));
+                localStorage.removeItem('sch_settings');
                 
+                settings = { name: '', days: '5', dailyClasses: 7 };
                 document.getElementById('schoolName').value = '';
                 document.getElementById('schoolDays').value = '5';
                 document.getElementById('dailyClasses').value = 7;
