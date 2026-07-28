@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة المدرسين - منظومة بناء الجداول</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body id="pageBody" class="bg-indigo-900 text-white min-h-screen flex flex-col justify-between transition-colors duration-300">
+
+    <!-- Header -->
+    <header class="bg-black/20 backdrop-blur-md shadow-sm py-5 border-b border-white/10">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg text-sm transition flex items-center gap-1">
+                    ⬅️ القائمة الرئيسية
+                </a>
+                <h1 class="text-xl font-bold">👨‍🏫 صفحة المدرسين</h1>
+            </div>
+            <span id="schoolNameHeader" class="text-sm font-semibold opacity-90"></span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-2xl flex-grow">
+        
+        <!-- نموذج الإضافة -->
+        <div id="cardContainer" class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
+            <h2 id="formTitle" class="text-lg font-bold mb-4 border-b pb-2 border-white/25">إضافة مدرس جديد</h2>
+            
+            <form id="teacherForm" onsubmit="saveTeacher(event)" class="space-y-4">
+                <input type="hidden" id="editIndex" value="-1">
+                
+                <div>
+                    <label class="block text-sm font-semibold mb-2">اسم المدرس:</label>
+                    <input type="text" id="teacherName" required class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="مثال: أحمد محمد علي">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2">اختصار المدرس (رمز التعريف):</label>
+                    <input type="text" id="teacherCode" required maxlength="10" class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="مثال: أ.حم">
+                </div>
+
+                <!-- اختيار لون ثيم هذه الصفحة -->
+                <div>
+                    <label class="block text-sm font-semibold mb-2">🎨 لون ثيم هذه الصفحة:</label>
+                    <select id="pageThemeSelect" onchange="changePageTheme(this.value)" class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="bg-indigo-900">نيللي غامق (افتراضي)</option>
+                        <option value="bg-slate-900">الداكن الليلي</option>
+                        <option value="bg-emerald-900">زمردي غامق</option>
+                        <option value="bg-purple-900">أرجواني داكن</option>
+                        <option value="bg-blue-600">أزرق حالم</option>
+                        <option value="bg-teal-800">تيل مميز</option>
+                        <option value="bg-rose-900">وردي داكن</option>
+                        <option value="bg-slate-100 text-gray-900">رمادي فاتح نظيف</option>
+                        <option value="bg-amber-50 text-gray-900">أصفر ذهبي ناعم</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" id="submitBtn" class="flex-grow bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg transition cursor-pointer">
+                        ➕ إضافة المدرس
+                    </button>
+                    <button type="button" onclick="resetForm()" class="bg-gray-600 hover:bg-gray-500 text-white font-bold px-5 py-3 rounded-xl shadow-lg transition cursor-pointer">
+                        إلغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- جدول عرض المدرسين -->
+        <div id="tableContainer" class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2 border-white/25">قائمة المدرسين المسجلين</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="border-b border-white/20 text-sm opacity-90">
+                            <th class="py-2 px-3">اسم المدرس</th>
+                            <th class="py-2 px-3">الاختصار</th>
+                            <th class="py-2 px-3 text-center">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teachersTableBody">
+                        <!-- تضاف البيانات هنا ديناميكياً -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="emptyMessage" class="text-center py-6 text-sm opacity-75 hidden">
+                لا توجد مدرسين مسجلين حتى الآن. قم بإضافة أول مدرس!
+            </div>
+        </div>
+
+        <!-- أزرار الحفظ والحذف العامة أسفل الصفحة -->
+        <div class="flex gap-4">
+            <button onclick="saveAllChanges()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition cursor-pointer flex items-center justify-center gap-2">
+                💾 حفظ الإعدادات
+            </button>
+            <button onclick="deleteAllTeachers()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition cursor-pointer flex items-center justify-center gap-2">
+                🗑️ حذف الكل
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="mainFooter" class="bg-slate-800 text-slate-300 border-t border-white/10 py-4 text-center text-sm transition-colors duration-300">
+        منظومة بناء الجداول المدرسية الذكية &copy; 2026
+    </footer>
+
+    <script>
+        // استرجاع اسم المدرسة من الإعدادات العامة
+        let settings = JSON.parse(localStorage.getItem('sch_settings')) || { name: '' };
+        document.getElementById('schoolNameHeader').innerText = settings.name || '';
+
+        // استرجاع ثيم صفحة المدرسين
+        let pageSettings = JSON.parse(localStorage.getItem('teachers_page_settings')) || { theme: 'bg-indigo-900' };
+
+        function applyPageTheme(themeClass) {
+            let body = document.getElementById('pageBody');
+            let card1 = document.getElementById('cardContainer');
+            let card2 = document.getElementById('tableContainer');
+            let footer = document.getElementById('mainFooter');
+            let selectBox = document.getElementById('pageThemeSelect');
+            let teacherName = document.getElementById('teacherName');
+            let teacherCode = document.getElementById('teacherCode');
+
+            body.className = `${themeClass} min-h-screen flex flex-col justify-between transition-colors duration-300`;
+            
+            let isLight = themeClass.includes('slate-100') || themeClass.includes('amber-50');
+            if (isLight) {
+                body.className += " text-gray-900";
+                let cardStyle = "p-6 rounded-2xl shadow-xl border bg-white/90 border-gray-300 text-gray-900 backdrop-blur-md mb-8";
+                card1.className = cardStyle;
+                card2.className = cardStyle;
+                footer.className = "bg-gray-200 text-gray-700 border-t border-gray-300 py-4 text-center text-sm transition-colors duration-300";
+                
+                let inputStyle = "w-full px-4 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400";
+                teacherName.className = inputStyle;
+                teacherCode.className = inputStyle;
+                selectBox.className = inputStyle;
+            } else {
+                body.className += " text-white";
+                let cardStyle = "p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8";
+                card1.className = cardStyle;
+                card2.className = cardStyle;
+                footer.className = "bg-black/30 text-slate-300 border-t border-white/10 py-4 text-center text-sm transition-colors duration-300";
+                
+                let inputStyle = "w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 placeholder-gray-300";
+                let selectStyle = "w-full px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/20 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50";
+                teacherName.className = inputStyle;
+                teacherCode.className = inputStyle;
+                selectBox.className = selectStyle;
+            }
+        }
+
+        function changePageTheme(colorClass) {
+            pageSettings.theme = colorClass;
+            localStorage.setItem('teachers_page_settings', JSON.stringify(pageSettings));
+            applyPageTheme(colorClass);
+        }
+
+        if (pageSettings.theme) {
+            document.getElementById('pageThemeSelect').value = pageSettings.theme;
+            applyPageTheme(pageSettings.theme);
+        }
+
+        // إدارة مصفوفة المدرسين
+        let teachers = JSON.parse(localStorage.getItem('sch_teachers')) || [];
+
+        function renderTeachers() {
+            let tbody = document.getElementById('teachersTableBody');
+            let emptyMsg = document.getElementById('emptyMessage');
+            tbody.innerHTML = '';
+
+            if (teachers.length === 0) {
+                emptyMsg.style.display = 'block';
+                return;
+            }
+            emptyMsg.style.display = 'none';
+
+            teachers.forEach((tch, index) => {
+                let tr = document.createElement('tr');
+                tr.className = "border-b border-white/10 hover:bg-white/5 transition";
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-semibold">${tch.name}</td>
+                    <td class="py-3 px-3 font-mono">${tch.code}</td>
+                    <td class="py-3 px-3 text-center space-x-2 space-x-reverse">
+                        <button onclick="editTeacher(${index})" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg text-xs transition cursor-pointer">✏️ تعديل</button>
+                        <button onclick="deleteTeacher(${index})" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg text-xs transition cursor-pointer">🗑️ حذف</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function saveTeacher(event) {
+            event.preventDefault();
+            let name = document.getElementById('teacherName').value.trim();
+            let code = document.getElementById('teacherCode').value.trim();
+            let editIndex = parseInt(document.getElementById('editIndex').value);
+
+            if (editIndex === -1) {
+                teachers.push({ name, code });
+            } else {
+                teachers[editIndex] = { name, code };
+            }
+
+            localStorage.setItem('sch_teachers', JSON.stringify(teachers));
+            resetForm();
+            renderTeachers();
+        }
+
+        function editTeacher(index) {
+            let tch = teachers[index];
+            document.getElementById('teacherName').value = tch.name;
+            document.getElementById('teacherCode').value = tch.code;
+            document.getElementById('editIndex').value = index;
+            document.getElementById('formTitle').innerText = 'تعديل بيانات المدرس';
+            document.getElementById('submitBtn').innerText = '💾 حفظ التعديلات';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteTeacher(index) {
+            if (confirm('هل أنت متأكد من حذف هذا المدرس؟')) {
+                teachers.splice(index, 1);
+                localStorage.setItem('sch_teachers', JSON.stringify(teachers));
+                renderTeachers();
+            }
+        }
+
+        function saveAllChanges() {
+            localStorage.setItem('sch_teachers', JSON.stringify(teachers));
+            alert('تم حفظ إعدادات المدرسين بنجاح!');
+        }
+
+        function deleteAllTeachers() {
+            if (confirm('هل أنت متأكد من حذف جميع المدرسين؟')) {
+                teachers = [];
+                localStorage.removeItem('sch_teachers');
+                renderTeachers();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('teacherForm').reset();
+            document.getElementById('editIndex').value = -1;
+            document.getElementById('formTitle').innerText = 'إضافة مدرس جديد';
+            document.getElementById('submitBtn').innerText = '➕ إضافة المدرس';
+        }
+
+        renderTeachers();
+    </script>
+</body>
+</html>
