@@ -10,525 +10,77 @@
         body { font-family: 'Cairo', sans-serif; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between">
 
     <!-- Header -->
-    <header class="bg-indigo-600 text-white shadow-md">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold">📚 منظومة بناء الجداول المدرسية الذكية</h1>
-            <span id="schoolNameDisplay" class="bg-indigo-700 px-3 py-1 rounded-lg text-sm">المدرسة الافتراضية</span>
+    <header class="bg-indigo-600 text-white shadow-md py-6">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-2xl font-bold mb-1">📚 منظومة بناء الجداول المدرسية الذكية</h1>
+            <p id="schoolNameDisplay" class="text-indigo-200 text-sm">المدرسة الافتراضية</p>
         </div>
     </header>
 
-    <!-- Navigation Tabs -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="container mx-auto px-4 flex overflow-x-auto space-x-reverse space-x-2 py-3">
-            <button onclick="switchTab('settings')" class="tab-btn px-4 py-2 rounded-lg font-semibold bg-indigo-50 text-indigo-600 whitespace-nowrap transition">الإعدادات</button>
-            <button onclick="switchTab('teachers')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">1. المدرسين</button>
-            <button onclick="switchTab('classes')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">الصفوف والشعب</button>
-            <button onclick="switchTab('subjects')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">المواد الدراسية</button>
-            <button onclick="switchTab('assignments')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">2. توزيع الحصص</button>
-            <button onclick="switchTab('generator')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">توليد وعرض الجدول</button>
+    <!-- Main Navigation Menu -->
+    <main class="container mx-auto px-4 py-10 max-w-2xl flex-grow">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <a href="settings.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-indigo-50 hover:border-indigo-300 transition group">
+                <span class="text-3xl ml-4">⚙️</span>
+                <div>
+                    <h2 class="font-bold text-lg text-gray-800 group-hover:text-indigo-600">إعدادات المدرسة</h2>
+                    <p class="text-sm text-gray-500">اسم المدرسة، أيام الدوام، والحصص اليومية</p>
+                </div>
+            </a>
+
+            <a href="teachers.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-indigo-50 hover:border-indigo-300 transition group">
+                <span class="text-3xl ml-4">👨‍🏫</span>
+                <div>
+                    <h2 class="font-bold text-lg text-gray-800 group-hover:text-indigo-600">صفحة المدرسين</h2>
+                    <p class="text-sm text-gray-500">إدارة الأسماء، الألوان، وأوقات عدم التواجد</p>
+                </div>
+            </a>
+
+            <a href="subjects.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-indigo-50 hover:border-indigo-300 transition group">
+                <span class="text-3xl ml-4">📖</span>
+                <div>
+                    <h2 class="font-bold text-lg text-gray-800 group-hover:text-indigo-600">صفحة المواد الدراسية</h2>
+                    <p class="text-sm text-gray-500">المواد الرسمية والاختصارات وألوان العرض</p>
+                </div>
+            </a>
+
+            <a href="classes.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-indigo-50 hover:border-indigo-300 transition group">
+                <span class="text-3xl ml-4">🏫</span>
+                <div>
+                    <h2 class="font-bold text-lg text-gray-800 group-hover:text-indigo-600">صفحة الصفوف والشعب</h2>
+                    <p class="text-sm text-gray-500">استقلال الصفوف عن الشعب وقوائمها المستقلة</p>
+                </div>
+            </a>
+
+            <a href="assignments.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-indigo-50 hover:border-indigo-300 transition group">
+                <span class="text-3xl ml-4">🔗</span>
+                <div>
+                    <h2 class="font-bold text-lg text-gray-800 group-hover:text-indigo-600">توزيع الحصص</h2>
+                    <p class="text-sm text-gray-500">ربط المدرس بالمادة والصف والشعبة وعدد الحصص</p>
+                </div>
+            </a>
+
+            <a href="generator.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-green-50 hover:border-green-300 transition group">
+                <span class="text-3xl ml-4">🖨️</span>
+                <div>
+                    <h2 class="font-bold text-lg text-gray-800 group-hover:text-green-600">الطباعة والعرض</h2>
+                    <p class="text-sm text-gray-500">توليد الجداول، التصدير لـ Excel، والطباعة</p>
+                </div>
+            </a>
         </div>
-    </nav>
-
-    <!-- Main Content Area -->
-    <main class="container mx-auto px-4 py-6 flex-grow max-w-5xl">
-
-        <!-- 1. Settings Tab -->
-        <section id="tab-settings" class="tab-content bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold text-indigo-600 mb-4">إعدادات الدوام المدرسي</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">اسم المدرسة</label>
-                    <input type="text" id="sName" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-400" placeholder="أدخل اسم المدرسة">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">عدد أيام الدوام الأسبوعي</label>
-                    <select id="sDays" class="w-full p-2 border rounded-lg">
-                        <option value="5">5 أيام (الأحد - الخميس)</option>
-                        <option value="6">6 أيام (السبت - الخميس)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">عدد الحصص اليومية</label>
-                    <input type="number" id="sPeriods" min="4" max="8" value="6" class="w-full p-2 border rounded-lg">
-                </div>
-            </div>
-            <div class="mt-6 flex gap-3">
-                <button onclick="savePageData('settings')" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition">حفظ مؤقت للإعدادات</button>
-                <button onclick="clearPageData('settings')" class="bg-red-100 text-red-600 px-5 py-2 rounded-lg hover:bg-red-200 transition">إلغاء الحفظ المؤقت</button>
-            </div>
-        </section>
-
-        <!-- 2. Teachers Tab -->
-        <section id="tab-teachers" class="tab-content hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold text-indigo-600 mb-4">الخطوة الأولى: إدارة المعلمين وتلوينهم</h2>
-            <div class="flex gap-2 mb-4">
-                <input type="text" id="tName" class="flex-grow p-2 border rounded-lg" placeholder="اسم المعلم">
-                <input type="color" id="tColor" value="#4f46e5" class="h-10 w-12 p-1 border rounded-lg cursor-pointer">
-                <button onclick="addTeacher()" id="teacherBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">إضافة معلم</button>
-            </div>
-            <div id="teachersList" class="space-y-2 mb-6"></div>
-            <div class="flex gap-3 border-t pt-4">
-                <button onclick="savePageData('teachers')" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700">حفظ مؤقت للمعلمين</button>
-                <button onclick="clearPageData('teachers')" class="bg-red-100 text-red-600 px-5 py-2 rounded-lg hover:bg-red-200">إلغاء الحفظ المؤقت</button>
-            </div>
-        </section>
-
-        <!-- 3. Classes Tab -->
-        <section id="tab-classes" class="tab-content hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold text-indigo-600 mb-4">الصفوف والشعب المستقلة</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <h3 class="font-semibold text-sm mb-2 text-gray-700">إدارة الصفوف الدراسية</h3>
-                    <div class="flex gap-2 mb-3">
-                        <input type="text" id="classNameInput" class="flex-grow p-2 border rounded-lg text-sm" placeholder="اسم الصف الجديد">
-                        <button onclick="addClass()" id="classBtn" class="bg-indigo-600 text-white px-3 py-2 rounded-lg text-sm">إضافة صف</button>
-                    </div>
-                    <div id="classesList" class="space-y-2 max-h-60 overflow-y-auto"></div>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-sm mb-2 text-gray-700">إدارة الشعب الدراسية</h3>
-                    <div class="flex gap-2 mb-3">
-                        <input type="text" id="sectionNameInput" class="flex-grow p-2 border rounded-lg text-sm" placeholder="اسم الشعبة (مثل: أ، ب)">
-                        <button onclick="addSection()" id="sectionBtn" class="bg-indigo-600 text-white px-3 py-2 rounded-lg text-sm">إضافة شعبة</button>
-                    </div>
-                    <div id="sectionsList" class="space-y-2 max-h-60 overflow-y-auto"></div>
-                </div>
-            </div>
-            <div class="flex gap-3 border-t pt-4">
-                <button onclick="savePageData('classes')" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700">حفظ مؤقت للصفوف والشعب</button>
-                <button onclick="clearPageData('classes')" class="bg-red-100 text-red-600 px-5 py-2 rounded-lg hover:bg-red-200">إلغاء الحفظ المؤقت</button>
-            </div>
-        </section>
-
-        <!-- 4. Subjects Tab -->
-        <section id="tab-subjects" class="tab-content hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold text-indigo-600 mb-4">المواد الدراسية واختصاراتها</h2>
-            <div class="flex gap-2 mb-4">
-                <input type="text" id="subName" class="flex-grow p-2 border rounded-lg" placeholder="اسم المادة الكامل">
-                <input type="text" id="subShort" class="w-32 p-2 border rounded-lg" placeholder="الاختصار بالجدول">
-                <input type="color" id="subColor" value="#10b981" class="h-10 w-12 p-1 border rounded-lg cursor-pointer">
-                <button onclick="addSubject()" id="subBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">إضافة مادة</button>
-            </div>
-            <div id="subjectsList" class="space-y-2 mb-6 max-h-80 overflow-y-auto"></div>
-            <div class="flex gap-3 border-t pt-4">
-                <button onclick="savePageData('subjects')" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700">حفظ مؤقت للمواد</button>
-                <button onclick="clearPageData('subjects')" class="bg-red-100 text-red-600 px-5 py-2 rounded-lg hover:bg-red-200">إلغاء الحفظ المؤقت</button>
-            </div>
-        </section>
-
-        <!-- 5. Assignments Tab -->
-        <section id="tab-assignments" class="tab-content hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold text-indigo-600 mb-4">الخطوة الثانية: ربط وتوزيع الحصص</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">المعلم</label>
-                    <select id="assignTeacher" class="w-full p-2 border rounded-lg bg-white"></select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">المادة الدراسية</label>
-                    <select id="assignSubject" class="w-full p-2 border rounded-lg bg-white"></select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">الصف</label>
-                    <select id="assignClass" class="w-full p-2 border rounded-lg bg-white"></select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">الشعبة</label>
-                    <select id="assignSection" class="w-full p-2 border rounded-lg bg-white"></select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">عدد الحصص أسبوعياً</label>
-                    <input type="number" id="assignHours" min="1" value="3" class="w-full p-2 border rounded-lg">
-                </div>
-            </div>
-            <button onclick="addAssignment()" id="assignBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 mb-4">إضافة التوزيع للجدول</button>
-            <div id="assignmentsList" class="space-y-2 mb-6 max-h-60 overflow-y-auto"></div>
-            <div class="flex gap-3 border-t pt-4">
-                <button onclick="savePageData('assignments')" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700">حفظ مؤقت للتوزيعات</button>
-                <button onclick="clearPageData('assignments')" class="bg-red-100 text-red-600 px-5 py-2 rounded-lg hover:bg-red-200">إلغاء الحفظ المؤقت</button>
-            </div>
-        </section>
-
-        <!-- 6. Generator Tab -->
-        <section id="tab-generator" class="tab-content hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold text-indigo-600 mb-4">توليد وعرض الجدول المدرسي</h2>
-            <div class="flex gap-3 mb-6">
-                <button onclick="generateSchedule()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-bold">توليد الجدول الآن</button>
-                <button onclick="exportTable('excel')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">تصدير Excel</button>
-                <button onclick="exportTable('print')" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700">طباعة / PDF / Word</button>
-            </div>
-            <div id="scheduleOutput" class="overflow-x-auto">
-                <p class="text-gray-500 text-center py-8">اضغط على "توليد الجدول الآن" لعرض الجداول المدرسية.</p>
-            </div>
-        </section>
-
     </main>
 
-    <!-- JavaScript Logic -->
+    <!-- Footer -->
+    <footer class="bg-white border-t py-4 text-center text-sm text-gray-500">
+        منظومة بناء الجداول المدرسية الذكية &copy; 2026
+    </footer>
+
     <script>
-        const defaultClasses = [
-            "الأول المتوسط", "الثاني المتوسط", "الثالث المتوسط",
-            "الرابع العلمي", "الخامس العلمي", "السادس العلمي",
-            "الرابع الادبي", "الخامس الادبي", "السادس الادبي"
-        ];
-
-        const defaultSections = ["أ", "ب", "ج", "د", "هاء", "و", "ز"];
-
-        const defaultSubjects = [
-            {name: "التربية الاسلامية", short: "الاسلامية", color: "#3b82f6"},
-            {name: "اللغة العربية", short: "العربي", color: "#ef4444"},
-            {name: "اللغة الانكليزية", short: "الانكليزي", color: "#10b981"},
-            {name: "الرياضيات", short: "الرياضيات", color: "#f59e0b"},
-            {name: "الاحياء", short: "الاحياء", color: "#10b981"},
-            {name: "الكيمياء", short: "الكيمياء", color: "#06b6d4"},
-            {name: "الفيزياء", short: "الفيزياء", color: "#8b5cf6"},
-            {name: "الحاسوب", short: "الحاسوب", color: "#64748b"},
-            {name: "الجغرافية", short: "الجغرافية", color: "#ec4899"},
-            {name: "التاريخ", short: "التاريخ", color: "#f97316"},
-            {name: "الاقتصاد", short: "الاقتصاد", color: "#14b8a6"},
-            {name: "الاجتماع", short: "الاجتماع", color: "#6366f1"},
-            {name: "الفلسفة", short: "الفلسفة", color: "#84cc16"},
-            {name: "جرائم البعث", short: "الجرائم", color: "#991b1b"},
-            {name: "الاخلاقية", short: "الاخلاقية", color: "#a855f7"},
-            {name: "الاسرية", short: "الاسرية", color: "#db2777"},
-            {name: "الكردية", short: "الكردية", color: "#0ea5e9"},
-            {name: "الفرنسية", short: "الفرنسية", color: "#4ade80"},
-            {name: "الرياضة", short: "الرياضة", color: "#eab308"},
-            {name: "الفنية", short: "الفنية", color: "#f43f5e"}
-        ];
-
-        let data = {
-            settings: JSON.parse(localStorage.getItem('sch_settings')) || { name: 'المدرسة الافتراضية', days: 5, periods: 6 },
-            teachers: JSON.parse(localStorage.getItem('sch_teachers')) || [],
-            classes: JSON.parse(localStorage.getItem('sch_classes')) || defaultClasses,
-            sections: JSON.parse(localStorage.getItem('sch_sections')) || defaultSections,
-            subjects: JSON.parse(localStorage.getItem('sch_subjects')) || defaultSubjects,
-            assignments: JSON.parse(localStorage.getItem('sch_assignments')) || []
-        };
-
-        let editingTeacherIndex = null;
-        let editingClassIndex = null;
-        let editingSectionIndex = null;
-        let editingSubjectIndex = null;
-        let editingAssignmentIndex = null;
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('bg-indigo-50', 'text-indigo-600');
-                el.classList.add('text-gray-600');
-            });
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-            event.currentTarget.classList.add('bg-indigo-50', 'text-indigo-600');
-            event.currentTarget.classList.remove('text-gray-600');
-            if(tabId === 'assignments') updateDropdowns();
-        }
-
-        document.getElementById('sName').value = data.settings.name;
-        document.getElementById('sDays').value = data.settings.days;
-        document.getElementById('sPeriods').value = data.settings.periods;
-        document.getElementById('schoolNameDisplay').innerText = data.settings.name;
-
-        function savePageData(page) {
-            if(page === 'settings') {
-                data.settings = {
-                    name: document.getElementById('sName').value,
-                    days: document.getElementById('sDays').value,
-                    periods: document.getElementById('sPeriods').value
-                };
-                localStorage.setItem('sch_settings', JSON.stringify(data.settings));
-                document.getElementById('schoolNameDisplay').innerText = data.settings.name;
-                alert('تم حفظ الإعدادات مؤقتاً بنجاح!');
-            } else if(page === 'teachers') {
-                localStorage.setItem('sch_teachers', JSON.stringify(data.teachers));
-                alert('تم حفظ المعلمين مؤقتاً بنجاح!');
-            } else if(page === 'classes') {
-                localStorage.setItem('sch_classes', JSON.stringify(data.classes));
-                localStorage.setItem('sch_sections', JSON.stringify(data.sections));
-                alert('تم حفظ الصفوف والشعب مؤقتاً بنجاح!');
-            } else if(page === 'subjects') {
-                localStorage.setItem('sch_subjects', JSON.stringify(data.subjects));
-                alert('تم حفظ المواد مؤقتاً بنجاح!');
-            } else if(page === 'assignments') {
-                localStorage.setItem('sch_assignments', JSON.stringify(data.assignments));
-                alert('تم حفظ التوزيعات مؤقتاً بنجاح!');
-            }
-        }
-
-        function clearPageData(page) {
-            if(confirm('هل أنت متأكد من إلغاء الحفظ المؤقت لهذه الصفحة؟')) {
-                localStorage.removeItem('sch_' + page);
-                if(page === 'classes') localStorage.removeItem('sch_sections');
-                location.reload();
-            }
-        }
-
-        // Teachers Logic
-        function addTeacher() {
-            let name = document.getElementById('tName').value;
-            let color = document.getElementById('tColor').value;
-            if(!name) return;
-            if(editingTeacherIndex !== null) {
-                data.teachers[editingTeacherIndex] = {name, color};
-                editingTeacherIndex = null;
-                document.getElementById('teacherBtn').innerText = 'إضافة معلم';
-            } else {
-                data.teachers.push({name, color});
-            }
-            document.getElementById('tName').value = '';
-            renderTeachers();
-        }
-        function editTeacher(i) {
-            document.getElementById('tName').value = data.teachers[i].name;
-            document.getElementById('tColor').value = data.teachers[i].color;
-            editingTeacherIndex = i;
-            document.getElementById('teacherBtn').innerText = 'تعديل المعلم';
-        }
-        function renderTeachers() {
-            let html = '';
-            data.teachers.forEach((t, i) => {
-                html += `<div class="flex justify-between items-center p-2 border rounded-lg" style="border-right: 5px solid ${t.color}">
-                    <span>${t.name}</span>
-                    <div class="space-x-2 space-x-reverse">
-                        <button onclick="editTeacher(${i})" class="text-blue-500 hover:text-blue-700 text-sm">تعديل</button>
-                        <button onclick="data.teachers.splice(${i},1);renderTeachers();" class="text-red-500 hover:text-red-700 text-sm">حذف</button>
-                    </div>
-                </div>`;
-            });
-            document.getElementById('teachersList').innerHTML = html;
-        }
-        renderTeachers();
-
-        // Classes Logic
-        function addClass() {
-            let name = document.getElementById('classNameInput').value;
-            if(!name) return;
-            if(editingClassIndex !== null) {
-                data.classes[editingClassIndex] = name;
-                editingClassIndex = null;
-                document.getElementById('classBtn').innerText = 'إضافة صف';
-            } else {
-                data.classes.push(name);
-            }
-            document.getElementById('classNameInput').value = '';
-            renderClasses();
-        }
-        function editClass(i) {
-            document.getElementById('classNameInput').value = data.classes[i];
-            editingClassIndex = i;
-            document.getElementById('classBtn').innerText = 'تعديل الصف';
-        }
-        function renderClasses() {
-            let html = '';
-            data.classes.forEach((c, i) => {
-                html += `<div class="flex justify-between items-center p-2 border rounded-lg text-sm">
-                    <span>${c}</span>
-                    <div class="space-x-2 space-x-reverse">
-                        <button onclick="editClass(${i})" class="text-blue-500 hover:text-blue-700">تعديل</button>
-                        <button onclick="data.classes.splice(${i},1);renderClasses();" class="text-red-500 hover:text-red-700">حذف</button>
-                    </div>
-                </div>`;
-            });
-            document.getElementById('classesList').innerHTML = html;
-        }
-        renderClasses();
-
-        // Sections Logic
-        function addSection() {
-            let name = document.getElementById('sectionNameInput').value;
-            if(!name) return;
-            if(editingSectionIndex !== null) {
-                data.sections[editingSectionIndex] = name;
-                editingSectionIndex = null;
-                document.getElementById('sectionBtn').innerText = 'إضافة شعبة';
-            } else {
-                data.sections.push(name);
-            }
-            document.getElementById('sectionNameInput').value = '';
-            renderSections();
-        }
-        function editSection(i) {
-            document.getElementById('sectionNameInput').value = data.sections[i];
-            editingSectionIndex = i;
-            document.getElementById('sectionBtn').innerText = 'تعديل الشعبة';
-        }
-        function renderSections() {
-            let html = '';
-            data.sections.forEach((s, i) => {
-                html += `<div class="flex justify-between items-center p-2 border rounded-lg text-sm">
-                    <span>الشعبة: ${s}</span>
-                    <div class="space-x-2 space-x-reverse">
-                        <button onclick="editSection(${i})" class="text-blue-500 hover:text-blue-700">تعديل</button>
-                        <button onclick="data.sections.splice(${i},1);renderSections();" class="text-red-500 hover:text-red-700">حذف</button>
-                    </div>
-                </div>`;
-            });
-            document.getElementById('sectionsList').innerHTML = html;
-        }
-        renderSections();
-
-        // Subjects Logic
-        function addSubject() {
-            let name = document.getElementById('subName').value;
-            let short = document.getElementById('subShort').value || name;
-            let color = document.getElementById('subColor').value;
-            if(!name) return;
-            if(editingSubjectIndex !== null) {
-                data.subjects[editingSubjectIndex] = {name, short, color};
-                editingSubjectIndex = null;
-                document.getElementById('subBtn').innerText = 'إضافة مادة';
-            } else {
-                data.subjects.push({name, short, color});
-            }
-            document.getElementById('subName').value = '';
-            document.getElementById('subShort').value = '';
-            renderSubjects();
-        }
-        function editSubject(i) {
-            document.getElementById('subName').value = data.subjects[i].name;
-            document.getElementById('subShort').value = data.subjects[i].short;
-            document.getElementById('subColor').value = data.subjects[i].color;
-            editingSubjectIndex = i;
-            document.getElementById('subBtn').innerText = 'تعديل المادة';
-        }
-        function renderSubjects() {
-            let html = '';
-            data.subjects.forEach((s, i) => {
-                html += `<div class="flex justify-between items-center p-2 border rounded-lg" style="border-right: 5px solid ${s.color}">
-                    <span><b>${s.name}</b> (الاختصار: ${s.short})</span>
-                    <div class="space-x-2 space-x-reverse">
-                        <button onclick="editSubject(${i})" class="text-blue-500 hover:text-blue-700 text-sm">تعديل</button>
-                        <button onclick="data.subjects.splice(${i},1);renderSubjects();" class="text-red-500 hover:text-red-700 text-sm">حذف</button>
-                    </div>
-                </div>`;
-            });
-            document.getElementById('subjectsList').innerHTML = html;
-        }
-        renderSubjects();
-
-        function updateDropdowns() {
-            let tOpt = '', subOpt = '', cOpt = '', secOpt = '';
-            data.teachers.forEach(t => tOpt += `<option value="${t.name}">${t.name}</option>`);
-            data.subjects.forEach(s => subOpt += `<option value="${s.name}">${s.name}</option>`);
-            data.classes.forEach(c => cOpt += `<option value="${c}">${c}</option>`);
-            data.sections.forEach(sec => secOpt += `<option value="${sec}">${sec}</option>`);
-            
-            document.getElementById('assignTeacher').innerHTML = tOpt;
-            document.getElementById('assignSubject').innerHTML = subOpt;
-            document.getElementById('assignClass').innerHTML = cOpt;
-            document.getElementById('assignSection').innerHTML = secOpt;
-        }
-
-        // Assignments Logic
-        function addAssignment() {
-            let teacher = document.getElementById('assignTeacher').value;
-            let subject = document.getElementById('assignSubject').value;
-            let className = document.getElementById('assignClass').value;
-            let section = document.getElementById('assignSection').value;
-            let hours = document.getElementById('assignHours').value;
-            if(!teacher || !subject || !className || !section) {
-                alert('الرجاء التأكد من إكمال كافة الحقول!');
-                return;
-            }
-            let item = {teacher, subject, className, section, hours};
-            if(editingAssignmentIndex !== null) {
-                data.assignments[editingAssignmentIndex] = item;
-                editingAssignmentIndex = null;
-                document.getElementById('assignBtn').innerText = 'إضافة التوزيع للجدول';
-            } else {
-                data.assignments.push(item);
-            }
-            renderAssignments();
-        }
-        function editAssignment(i) {
-            let a = data.assignments[i];
-            document.getElementById('assignTeacher').value = a.teacher;
-            document.getElementById('assignSubject').value = a.subject;
-            document.getElementById('assignClass').value = a.className;
-            document.getElementById('assignSection').value = a.section;
-            document.getElementById('assignHours').value = a.hours;
-            editingAssignmentIndex = i;
-            document.getElementById('assignBtn').innerText = 'تعديل التوزيع';
-        }
-        function renderAssignments() {
-            let html = '';
-            data.assignments.forEach((a, i) => {
-                html += `<div class="flex justify-between items-center p-2 border rounded-lg text-sm">
-                    <span>المعلم: <b>${a.teacher}</b> | المادة: <b>${a.subject}</b> | الصف: <b>${a.className} - ${a.section}</b> (${a.hours} حصص)</span>
-                    <div class="space-x-2 space-x-reverse">
-                        <button onclick="editAssignment(${i})" class="text-blue-500 hover:text-blue-700">تعديل</button>
-                        <button onclick="data.assignments.splice(${i},1);renderAssignments();" class="text-red-500 hover:text-red-700">حذف</button>
-                    </div>
-                </div>`;
-            });
-            document.getElementById('assignmentsList').innerHTML = html;
-        }
-        renderAssignments();
-
-        function generateSchedule() {
-            if(data.teachers.length === 0) {
-                alert('الرجاء إضافة معلم واحد على الأقل أولاً!');
-                return;
-            }
-            let daysNames = data.settings.days == 6 ? ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'] : ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
-            let periodsCount = parseInt(data.settings.periods);
-            
-            let html = '';
-            // توليد جدول مستقل لكل صف وشعبة
-            data.classes.forEach(cls => {
-                data.sections.forEach(sec => {
-                    let classAssignments = data.assignments.filter(a => a.className === cls && a.section === sec);
-                    if(classAssignments.length === 0) return; // تخطي الصفوف التي ليس لها توزيعات
-
-                    html += `<h3 class="text-md font-bold text-indigo-700 mt-6 mb-2">جدول صف: ${cls} - الشعبة (${sec})</h3>`;
-                    html += `<table class="w-full border-collapse border border-gray-300 text-center text-sm mb-4">
-                        <tr class="bg-indigo-100">
-                            <th class="border border-gray-300 p-2">اليوم / الحصة</th>`;
-                    for(let p=1; p<=periodsCount; p++) {
-                        html += `<th class="border border-gray-300 p-2">الحصة ${p}</th>`;
-                    }
-                    html += `</tr>`;
-
-                    daysNames.forEach(day => {
-                        html += `<tr><td class="border border-gray-300 p-2 bg-gray-50 font-bold">${day}</td>`;
-                        for(let p=1; p<=periodsCount; p++) {
-                            let assigned = classAssignments.length > 0 ? classAssignments[Math.floor(Math.random() * classAssignments.length)] : {subject: 'انتظار', teacher: ''};
-                            let subObj = data.subjects.find(s => s.name === assigned.subject);
-                            let subDisplayName = subObj ? subObj.short : assigned.subject;
-                            let tObj = data.teachers.find(t => t.name === assigned.teacher);
-                            let bgColor = subObj ? subObj.color + '22' : '#ffffff';
-                            let tColor = tObj ? tObj.color : '#000';
-                            
-                            html += `<td class="border border-gray-300 p-2" style="background-color: ${bgColor}">
-                                <div class="font-bold">${subDisplayName}</div>
-                                <div class="text-xs" style="color: ${tColor}; font-weight: 600;">${assigned.teacher}</div>
-                            </td>`;
-                        }
-                        html += `</tr>`;
-                    });
-                    html += `</table>`;
-                });
-            });
-            if(!html) html = '<p class="text-red-500 text-center py-4">الرجاء إدخال توزيعات حصص صحيحة في صفحة "توزيع الحصص" أولاً!</p>';
-            document.getElementById('scheduleOutput').innerHTML = html;
-        }
-
-        function exportTable(type) {
-            if(type === 'excel') {
-                let tableHtml = document.getElementById('scheduleOutput').innerHTML;
-                let blob = new Blob(['\ufeff' + tableHtml], { type: 'application/vnd.ms-excel' });
-                let url = URL.createObjectURL(blob);
-                let a = document.createElement('a');
-                a.href = url;
-                a.download = 'School_Schedule.xls';
-                a.click();
-            } else if(type === 'print') {
-                window.print();
-            }
-        }
+        let settings = JSON.parse(localStorage.getItem('sch_settings')) || { name: 'المدرسة الافتراضية' };
+        document.getElementById('schoolNameDisplay').innerText = settings.name;
     </script>
 </body>
 </html>
