@@ -25,10 +25,10 @@
     <nav class="bg-white shadow-sm border-b border-gray-200">
         <div class="container mx-auto px-4 flex overflow-x-auto space-x-reverse space-x-2 py-3">
             <button onclick="switchTab('settings')" class="tab-btn px-4 py-2 rounded-lg font-semibold bg-indigo-50 text-indigo-600 whitespace-nowrap transition">الإعدادات الأساسية</button>
-            <button onclick="switchTab('teachers')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">المدرسين</button>
-            <button onclick="switchTab('classes')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">الصفوف والشعب</button>
-            <button onclick="switchTab('subjects')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">المواد الدراسية</button>
-            <button onclick="switchTab('assignments')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">توزيع الحصص والقيود</button>
+            <button onclick="switchTab('teachers')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">1. المدرسين</button>
+            <button onclick="switchTab('classes')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">الصفوف والشعب (جاهزة)</button>
+            <button onclick="switchTab('subjects')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">المواد الدراسية (جاهزة)</button>
+            <button onclick="switchTab('assignments')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">2. توزيع الحصص والقيود</button>
             <button onclick="switchTab('generator')" class="tab-btn px-4 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">توليد وعرض الجدول</button>
         </div>
     </nav>
@@ -64,7 +64,8 @@
 
         <!-- 2. Teachers Tab -->
         <section id="tab-teachers" class="tab-content hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold text-indigo-600 mb-4">إدارة المعلمين وتلوينهم</h2>
+            <h2 class="text-lg font-bold text-indigo-600 mb-4">الخطوة الأولى: إدارة المعلمين وتلوينهم</h2>
+            <p class="text-sm text-gray-500 mb-4">قم بإضافة أسماء المعلمين وتخصيص لون مميز لكل معلم لكي يظهر في الجدول النهائي.</p>
             <div class="flex gap-2 mb-4">
                 <input type="text" id="tName" class="flex-grow p-2 border rounded-lg" placeholder="اسم المعلم">
                 <input type="color" id="tColor" value="#4f46e5" class="h-10 w-12 p-1 border rounded-lg cursor-pointer">
@@ -79,9 +80,10 @@
 
         <!-- 3. Classes Tab -->
         <section id="tab-classes" class="tab-content hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold text-indigo-600 mb-4">الصفوف الدراسية والشعب</h2>
+            <h2 class="text-lg font-bold text-indigo-600 mb-4">الصفوف والشعب (مجهزة تلقائياً)</h2>
+            <p class="text-sm text-gray-500 mb-4">تم تجهيز الصفوف والشعب افتراضياً لتسهيل العمل، يمكنك إضافة أو حذف أي صف حسب الحاجة.</p>
             <div class="flex gap-2 mb-4">
-                <input type="text" id="cName" class="flex-grow p-2 border rounded-lg" placeholder="اسم الصف والشعبة (مثلاً: الأول المتوسط - أ)">
+                <input type="text" id="cName" class="flex-grow p-2 border rounded-lg" placeholder="إضافة صف وشعبة جديدة (مثلاً: الرابع الابتدائي - أ)">
                 <button onclick="addClass()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">إضافة صف</button>
             </div>
             <div id="classesList" class="space-y-2 mb-6"></div>
@@ -93,9 +95,10 @@
 
         <!-- 4. Subjects Tab -->
         <section id="tab-subjects" class="tab-content hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold text-indigo-600 mb-4">المواد الدراسية</h2>
+            <h2 class="text-lg font-bold text-indigo-600 mb-4">المواد الدراسية (مجهزة تلقائياً)</h2>
+            <p class="text-sm text-gray-500 mb-4">المواد الأساسية مجهزة مسبقاً مع ألوانها، ويمكنك إضافة مواد أخرى أو تعديلها بسهولة.</p>
             <div class="flex gap-2 mb-4">
-                <input type="text" id="subName" class="flex-grow p-2 border rounded-lg" placeholder="اسم المادة الدراسية">
+                <input type="text" id="subName" class="flex-grow p-2 border rounded-lg" placeholder="اسم المادة الدراسية الجديدة">
                 <input type="color" id="subColor" value="#10b981" class="h-10 w-12 p-1 border rounded-lg cursor-pointer">
                 <button onclick="addSubject()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">إضافة مادة</button>
             </div>
@@ -108,19 +111,20 @@
 
         <!-- 5. Assignments Tab -->
         <section id="tab-assignments" class="tab-content hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-bold text-indigo-600 mb-4">ربط وتوزيع الحصص والقيود</h2>
+            <h2 class="text-lg font-bold text-indigo-600 mb-4">الخطوة الثانية: ربط وتوزيع الحصص</h2>
+            <p class="text-sm text-gray-500 mb-4">اختر المعلم، ثم المادة المجهزة، ثم الصف والشعبة وحدد عدد الحصص المطلوبة.</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block text-sm font-medium mb-1">المعلم</label>
-                    <select id="assignTeacher" class="w-full p-2 border rounded-lg"></select>
+                    <select id="assignTeacher" class="w-full p-2 border rounded-lg bg-white"></select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1">المادة</label>
-                    <select id="assignSubject" class="w-full p-2 border rounded-lg"></select>
+                    <select id="assignSubject" class="w-full p-2 border rounded-lg bg-white"></select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1">الصف والشعبة</label>
-                    <select id="assignClass" class="w-full p-2 border rounded-lg"></select>
+                    <select id="assignClass" class="w-full p-2 border rounded-lg bg-white"></select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1">عدد الحصص أسبوعياً</label>
@@ -144,7 +148,7 @@
                 <button onclick="exportTable('print')" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700">طباعة / PDF / Word</button>
             </div>
             <div id="scheduleOutput" class="overflow-x-auto">
-                <p class="text-gray-500 text-center py-8">اضغط على "توليد الجدول الآن" لعرض الجداول المدرسية.</p>
+                <p class="text-gray-500 text-center py-8">اضغط على "توليد الجدول الآن" لعرض الجداول المدرسية الملونة.</p>
             </div>
         </section>
 
@@ -152,11 +156,29 @@
 
     <!-- JavaScript Logic -->
     <script>
+        // قيم افتراضية جاهزة لتسهيل العمل على المدير
+        const defaultClasses = [
+            "الأول المتوسط - أ", "الأول المتوسط - ب",
+            "الثاني المتوسط - أ", "الثاني المتوسط - ب",
+            "الثالث المتوسط - أ", "الثالث المتوسط - ب"
+        ];
+
+        const defaultSubjects = [
+            {name: "التربية الإسلامية", color: "#3b82f6"},
+            {name: "اللغة العربية", color: "#ef4444"},
+            {name: "اللغة الإنجليزية", color: "#10b981"},
+            {name: "الرياضيات", color: "#f59e0b"},
+            {name: "العلوم", color: "#8b5cf6"},
+            {name: "الاجتماعيات", color: "#ec4899"},
+            {name: "حاسوب", color: "#06b6d4"},
+            {name: "تربية فنية / رياضية", color: "#64748b"}
+        ];
+
         let data = {
             settings: JSON.parse(localStorage.getItem('sch_settings')) || { name: 'المدرسة الافتراضية', days: 5, periods: 6 },
             teachers: JSON.parse(localStorage.getItem('sch_teachers')) || [],
-            classes: JSON.parse(localStorage.getItem('sch_classes')) || [],
-            subjects: JSON.parse(localStorage.getItem('sch_subjects')) || [],
+            classes: JSON.parse(localStorage.getItem('sch_classes')) || defaultClasses,
+            subjects: JSON.parse(localStorage.getItem('sch_subjects')) || defaultSubjects,
             assignments: JSON.parse(localStorage.getItem('sch_assignments')) || []
         };
 
@@ -284,7 +306,10 @@
             let subject = document.getElementById('assignSubject').value;
             let className = document.getElementById('assignClass').value;
             let hours = document.getElementById('assignHours').value;
-            if(!teacher || !subject || !className) return;
+            if(!teacher || !subject || !className) {
+                alert('الرجاء التأكد من إضافة مدرسين أولاً وتحديد كافة الحقول!');
+                return;
+            }
             data.assignments.push({teacher, subject, className, hours});
             renderAssignments();
         }
@@ -301,8 +326,12 @@
         renderAssignments();
 
         function generateSchedule() {
+            if(data.teachers.length === 0) {
+                alert('الرجاء الانتقال لصفحة المدرسين وإضافة معلم واحد على الأقل أولاً!');
+                return;
+            }
             if(data.classes.length === 0) {
-                alert('الرجاء إضافة صفوف وشعب أولاً!');
+                alert('الرجاء التأكد من وجود صفوف دراسية!');
                 return;
             }
             let daysNames = data.settings.days == 6 ? ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'] : ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
@@ -322,15 +351,15 @@
                 daysNames.forEach(day => {
                     html += `<tr><td class="border border-gray-300 p-2 bg-gray-50 font-bold">${day}</td>`;
                     for(let p=1; p<=periodsCount; p++) {
-                        // توزيع عشوائي ذكي للتجربة بناءً على التوزيعات المدخلة
-                        let assigned = data.assignments.length > 0 ? data.assignments[Math.floor(Math.random() * data.assignments.length)] : {subject: 'فراغ', teacher: ''};
+                        let assigned = data.assignments.length > 0 ? data.assignments[Math.floor(Math.random() * data.assignments.length)] : {subject: 'انتظار / فراغ', teacher: ''};
                         let subObj = data.subjects.find(s => s.name === assigned.subject);
                         let tObj = data.teachers.find(t => t.name === assigned.teacher);
                         let bgColor = subObj ? subObj.color + '22' : '#ffffff';
+                        let tColor = tObj ? tObj.color : '#000';
                         
                         html += `<td class="border border-gray-300 p-2" style="background-color: ${bgColor}">
                             <div class="font-bold">${assigned.subject}</div>
-                            <div class="text-xs text-gray-600">${assigned.teacher}</div>
+                            <div class="text-xs" style="color: ${tColor}; font-weight: 600;">${assigned.teacher}</div>
                         </td>`;
                     }
                     html += `</tr>`;
