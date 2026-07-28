@@ -79,7 +79,7 @@
         </div>
 
         <!-- جدول عرض المواد المضافة -->
-        <div id="tableContainer" class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md">
+        <div id="tableContainer" class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
             <h2 class="text-lg font-bold mb-4 border-b pb-2 border-white/25">قائمة المواد الدراسية المسجلة</h2>
             
             <div class="overflow-x-auto">
@@ -100,6 +100,16 @@
             <div id="emptyMessage" class="text-center py-6 text-sm opacity-75 hidden">
                 لا توجد مواد مسجلة حتى الآن. قم بإضافة أول مادة!
             </div>
+        </div>
+
+        <!-- أزرار الحفظ والحذف العامة أسفل الصفحة -->
+        <div class="flex gap-4">
+            <button onclick="saveAllChanges()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition cursor-pointer flex items-center justify-center gap-2">
+                💾 حفظ الإعدادات
+            </button>
+            <button onclick="deleteAllSubjects()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition cursor-pointer flex items-center justify-center gap-2">
+                🗑️ حذف الحفظ
+            </button>
         </div>
     </main>
 
@@ -131,7 +141,7 @@
                 body.className += " text-gray-900";
                 let cardStyle = "p-6 rounded-2xl shadow-xl border bg-white/90 border-gray-300 text-gray-900 backdrop-blur-md mb-8";
                 card1.className = cardStyle;
-                card2.className = "p-6 rounded-2xl shadow-xl border bg-white/90 border-gray-300 text-gray-900 backdrop-blur-md";
+                card2.className = cardStyle;
                 footer.className = "bg-gray-200 text-gray-700 border-t border-gray-300 py-4 text-center text-sm transition-colors duration-300";
                 
                 let inputStyle = "w-full px-4 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400";
@@ -142,7 +152,7 @@
                 body.className += " text-white";
                 let cardStyle = "p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8";
                 card1.className = cardStyle;
-                card2.className = "p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md";
+                card2.className = cardStyle;
                 footer.className = "bg-black/30 text-slate-300 border-t border-white/10 py-4 text-center text-sm transition-colors duration-300";
                 
                 let inputStyle = "w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 placeholder-gray-300";
@@ -164,7 +174,7 @@
             applyPageTheme(pageSettings.theme);
         }
 
-        // قائمة المواد الافتراضية التي طلبتها
+        // قائمة المواد الافتراضية
         const defaultSubjects = [
             { name: "التربية الاسلامية", code: "الاسلامية", color: "#10b981" },
             { name: "اللغة العربية", code: "العربي", color: "#3b82f6" },
@@ -186,7 +196,6 @@
             { name: "الاسرية", code: "اسرية", color: "#eab308" }
         ];
 
-        // استرجاع المواد من التخزين أو وضع المواد الافتراضية
         let subjects = JSON.parse(localStorage.getItem('sch_subjects'));
         if (!subjects || subjects.length === 0) {
             subjects = defaultSubjects;
@@ -259,6 +268,19 @@
             }
         }
 
+        function saveAllChanges() {
+            localStorage.setItem('sch_subjects', JSON.stringify(subjects));
+            alert('تم حفظ إعدادات المواد بنجاح!');
+        }
+
+        function deleteAllSubjects() {
+            if (confirm('هل أنت متأكد من حذف جميع المواد وإعادة ضبط الصفحة؟')) {
+                subjects = [];
+                localStorage.removeItem('sch_subjects');
+                renderSubjects();
+            }
+        }
+
         function resetForm() {
             document.getElementById('subjectForm').reset();
             document.getElementById('editIndex').value = -1;
@@ -267,9 +289,7 @@
             document.getElementById('subColor').value = '#3b82f6';
         }
 
-        // تشغيل عرض البيانات عند تحميل الصفحة
         renderSubjects();
     </script>
 </body>
 </html>
- 
