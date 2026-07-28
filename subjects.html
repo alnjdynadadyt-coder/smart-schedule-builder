@@ -40,7 +40,7 @@
 
                 <div>
                     <label class="block text-sm font-semibold mb-2">اختصار المادة:</label>
-                    <input type="text" id="subCode" required maxlength="6" class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="مثال: ريا">
+                    <input type="text" id="subCode" required maxlength="15" class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="مثال: ريا">
                 </div>
 
                 <div>
@@ -97,7 +97,7 @@
                     </tbody>
                 </table>
             </div>
-            <div id="emptyMessage" class="text-center py-6 text-sm opacity-75">
+            <div id="emptyMessage" class="text-center py-6 text-sm opacity-75 hidden">
                 لا توجد مواد مسجلة حتى الآن. قم بإضافة أول مادة!
             </div>
         </div>
@@ -164,8 +164,34 @@
             applyPageTheme(pageSettings.theme);
         }
 
-        // إدارة مصفوفة المواد الدراسية
-        let subjects = JSON.parse(localStorage.getItem('sch_subjects')) || [];
+        // قائمة المواد الافتراضية التي طلبتها
+        const defaultSubjects = [
+            { name: "التربية الاسلامية", code: "الاسلامية", color: "#10b981" },
+            { name: "اللغة العربية", code: "العربي", color: "#3b82f6" },
+            { name: "اللغة الانكليزية", code: "الانكليزي", color: "#6366f1" },
+            { name: "الرياضيات", code: "رياضيات", color: "#f59e0b" },
+            { name: "الاحياء", code: "احياء", color: "#84cc16" },
+            { name: "الكيمياء", code: "كيمياء", color: "#ec4899" },
+            { name: "الفيزياء", code: "فيزياء", color: "#8b5cf6" },
+            { name: "التاريخ", code: "تاريخ", color: "#d97706" },
+            { name: "الجغرافية", code: "جغرافية", color: "#14b8a6" },
+            { name: "الاقتصاد", code: "اقتصاد", color: "#06b6d4" },
+            { name: "جرائم البعث", code: "الجرائم", color: "#ef4444" },
+            { name: "علم النفس", code: "النفس", color: "#f43f5e" },
+            { name: "علم الاجتماع", code: "الاجتماع", color: "#3b82f6" },
+            { name: "الأخلاقية", code: "الأخلاقية", color: "#10b981" },
+            { name: "الحاسوب", code: "حاسوب", color: "#64748b" },
+            { name: "الرياضة", code: "رياضة", color: "#22c55e" },
+            { name: "الفنية", code: "فنية", color: "#a855f7" },
+            { name: "الاسرية", code: "اسرية", color: "#eab308" }
+        ];
+
+        // استرجاع المواد من التخزين أو وضع المواد الافتراضية
+        let subjects = JSON.parse(localStorage.getItem('sch_subjects'));
+        if (!subjects || subjects.length === 0) {
+            subjects = defaultSubjects;
+            localStorage.setItem('sch_subjects', JSON.stringify(subjects));
+        }
 
         function renderSubjects() {
             let tbody = document.getElementById('subjectsTableBody');
@@ -246,3 +272,4 @@
     </script>
 </body>
 </html>
+ 
