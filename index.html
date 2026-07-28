@@ -10,38 +10,41 @@
         body { font-family: 'Cairo', sans-serif; }
     </style>
 </head>
-<body id="pageBody" class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between transition-colors duration-300">
+<body id="pageBody" class="bg-indigo-900 text-white min-h-screen flex flex-col justify-between transition-colors duration-300">
 
     <!-- Header -->
-    <header class="bg-indigo-600 text-white shadow-md py-6 transition-colors duration-300">
+    <header class="bg-black/20 backdrop-blur-md shadow-sm py-5 border-b border-white/10">
         <div class="container mx-auto px-4 flex justify-between items-center relative">
             <div>
                 <h1 class="text-2xl font-bold mb-1">📚 منظومة بناء الجداول المدرسية الذكية</h1>
-                <p id="schoolNameDisplay" class="text-indigo-100 text-sm">المدرسة الافتراضية</p>
+                <p id="schoolNameDisplay" class="text-white/80 text-sm">المدرسة الافتراضية</p>
             </div>
             
-            <!-- زر الألوان لتغيير ثيم الصفحة بالكامل -->
+            <!-- زر الألوان لتغيير الثيم بالكامل -->
             <div class="relative">
-                <button onclick="toggleThemeMenu()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 transition cursor-pointer">
-                    🎨 لون الصفحة
+                <button onclick="toggleThemeMenu()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-1 transition cursor-pointer shadow">
+                    🎨 لون الثيم الشامل
                 </button>
                 
-                <!-- قائمة الألوان الشاملة -->
-                <div id="themeMenu" class="absolute left-0 mt-2 w-52 bg-white rounded-xl shadow-2xl py-2 hidden z-50 text-gray-800 border border-gray-100">
-                    <div class="px-3 py-1 text-xs font-bold text-gray-400 border-b mb-1">اختر ثيم الصفحة بالكامل</div>
-                    
-                    <button onclick="setTheme('bg-gray-50 text-gray-800', 'indigo')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-indigo-600 inline-block"></span> نيلي (افتراضي)</button>
-                    <button onclick="setTheme('bg-blue-50 text-blue-950', 'blue')" class="w-full text-right px-4 py-2 hover:bg-blue-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-600 inline-block"></span> أزرق هادئ</button>
-                    <button onclick="setTheme('bg-emerald-50 text-emerald-950', 'emerald')" class="w-full text-right px-4 py-2 hover:bg-emerald-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-600 inline-block"></span> زمردي أخضر</button>
-                    <button onclick="setTheme('bg-purple-50 text-purple-950', 'purple')" class="w-full text-right px-4 py-2 hover:bg-purple-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-600 inline-block"></span> أرجواني فخم</button>
-                    <button onclick="setTheme('bg-rose-50 text-rose-950', 'rose')" class="w-full text-right px-4 py-2 hover:bg-rose-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-rose-600 inline-block"></span> وردي دافئ</button>
-                    
+                <!-- قائمة الألوان المتنوعة (غامقة، متوسطة، فاتحة) -->
+                <div id="themeMenu" class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 hidden z-50 text-gray-800 border border-gray-100">
+                    <div class="px-3 py-1 text-xs font-bold text-gray-400 border-b mb-1">ألوان غامقة وقوية</div>
+                    <button onclick="setTheme('bg-indigo-900 text-white', 'bg-white/10 border-white/20 text-white hover:bg-white/20', 'bg-slate-800 text-slate-300')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-indigo-900 inline-block"></span> نيلي غامق (افتراضي)</button>
+                    <button onclick="setTheme('bg-slate-900 text-slate-100', 'bg-slate-800 border-slate-700 text-slate-100 hover:bg-slate-700', 'bg-slate-800 text-slate-400')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-slate-900 inline-block"></span> الداكن الليلي</button>
+                    <button onclick="setTheme('bg-emerald-950 text-emerald-100', 'bg-emerald-900/60 border-emerald-800 text-emerald-100 hover:bg-emerald-900', 'bg-emerald-900 text-emerald-300')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-900 inline-block"></span> زمردي غامق</button>
+                    <button onclick="setTheme('bg-purple-950 text-purple-100', 'bg-purple-900/60 border-purple-800 text-purple-100 hover:bg-purple-900', 'bg-purple-900 text-purple-300')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-900 inline-block"></span> أرجواني داكن</button>
+
                     <div class="border-t my-1"></div>
-                    <div class="px-3 py-1 text-xs font-bold text-gray-400">الثيمات الفاتحة والساطعة</div>
-                    
-                    <button onclick="setTheme('bg-amber-50 text-gray-900', 'amber')" class="w-full text-right px-4 py-2 hover:bg-amber-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-300 inline-block"></span> أصفر ذهبي ناعم</button>
-                    <button onclick="setTheme('bg-white text-gray-900', 'white')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2 font-bold"><span class="w-3 h-3 rounded-full bg-gray-200 border inline-block"></span> الأبيض الكامل</button>
-                    <button onclick="setTheme('bg-slate-900 text-slate-100', 'dark')" class="w-full text-right px-4 py-2 hover:bg-slate-800 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-slate-700 inline-block"></span> الداكن الليلي</button>
+                    <div class="px-3 py-1 text-xs font-bold text-gray-400">ألوان ملونة ومتوسطة</div>
+                    <button onclick="setTheme('bg-blue-600 text-white', 'bg-blue-700/80 border-blue-500 text-white hover:bg-blue-700', 'bg-blue-800 text-blue-200')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-600 inline-block"></span> أزرق حالم</button>
+                    <button onclick="setTheme('bg-teal-700 text-white', 'bg-teal-800/80 border-teal-600 text-white hover:bg-teal-800', 'bg-teal-900 text-teal-200')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-teal-700 inline-block"></span> تيل مميز</button>
+                    <button onclick="setTheme('bg-rose-700 text-white', 'bg-rose-800/80 border-rose-600 text-white hover:bg-rose-800', 'bg-rose-900 text-rose-200')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-rose-700 inline-block"></span> وردي داكن</button>
+
+                    <div class="border-t my-1"></div>
+                    <div class="px-3 py-1 text-xs font-bold text-gray-400">ألوان فاتحة ونظيفة</div>
+                    <button onclick="setTheme('bg-gray-100 text-gray-800', 'bg-white border-gray-200 text-gray-800 hover:bg-gray-50', 'bg-white text-gray-500')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-gray-200 border inline-block"></span> رمادي فاتح نظيف</button>
+                    <button onclick="setTheme('bg-amber-50 text-gray-900', 'bg-white border-amber-200 text-gray-900 hover:bg-amber-100/50', 'bg-white text-gray-500')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-200 inline-block"></span> أصفر ذهبي ناعم</button>
+                    <button onclick="setTheme('bg-white text-gray-900', 'bg-gray-50 border-gray-200 text-gray-900 hover:bg-gray-100', 'bg-white text-gray-500')" class="w-full text-right px-4 py-2 hover:bg-gray-100 text-sm flex items-center gap-2 font-bold"><span class="w-3 h-3 rounded-full bg-white border inline-block"></span> الأبيض الكامل</button>
                 </div>
             </div>
         </div>
@@ -49,66 +52,68 @@
 
     <!-- Main Navigation Menu -->
     <main class="container mx-auto px-4 py-10 max-w-2xl flex-grow">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <a href="settings.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition group text-gray-800">
+        <div id="menuCards" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <a href="settings.html" class="card-item flex items-center p-5 bg-white/10 border border-white/20 rounded-xl shadow-sm hover:bg-white/20 transition group text-white">
                 <span class="text-3xl ml-4">⚙️</span>
                 <div>
-                    <h2 class="font-bold text-lg group-hover:text-indigo-600">إعدادات المدرسة</h2>
-                    <p class="text-sm text-gray-500">اسم المدرسة، أيام الدوام، والحصص اليومية</p>
+                    <h2 class="font-bold text-lg">إعدادات المدرسة</h2>
+                    <p class="text-sm opacity-80">اسم المدرسة، أيام الدوام، والحصص اليومية</p>
                 </div>
             </a>
 
-            <a href="teachers.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition group text-gray-800">
+            <a href="teachers.html" class="card-item flex items-center p-5 bg-white/10 border border-white/20 rounded-xl shadow-sm hover:bg-white/20 transition group text-white">
                 <span class="text-3xl ml-4">👨‍🏫</span>
                 <div>
-                    <h2 class="font-bold text-lg group-hover:text-indigo-600">صفحة المدرسين</h2>
-                    <p class="text-sm text-gray-500">إدارة الأسماء، الألوان، وأوقات عدم التواجد</p>
+                    <h2 class="font-bold text-lg">صفحة المدرسين</h2>
+                    <p class="text-sm opacity-80">إدارة الأسماء، الألوان، وأوقات عدم التواجد</p>
                 </div>
             </a>
 
-            <a href="subjects.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition group text-gray-800">
+            <a href="subjects.html" class="card-item flex items-center p-5 bg-white/10 border border-white/20 rounded-xl shadow-sm hover:bg-white/20 transition group text-white">
                 <span class="text-3xl ml-4">📖</span>
                 <div>
-                    <h2 class="font-bold text-lg group-hover:text-indigo-600">صفحة المواد الدراسية</h2>
-                    <p class="text-sm text-gray-500">المواد الرسمية والاختصارات وألوان العرض</p>
+                    <h2 class="font-bold text-lg">صفحة المواد الدراسية</h2>
+                    <p class="text-sm opacity-80">المواد الرسمية والاختصارات وألوان العرض</p>
                 </div>
             </a>
 
-            <a href="classes.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition group text-gray-800">
+            <a href="classes.html" class="card-item flex items-center p-5 bg-white/10 border border-white/20 rounded-xl shadow-sm hover:bg-white/20 transition group text-white">
                 <span class="text-3xl ml-4">🏫</span>
                 <div>
-                    <h2 class="font-bold text-lg group-hover:text-indigo-600">صفحة الصفوف والشعب</h2>
-                    <p class="text-sm text-gray-500">استقلال الصفوف عن الشعب وقوائمها المستقلة</p>
+                    <h2 class="font-bold text-lg">صفحة الصفوف والشعب</h2>
+                    <p class="text-sm opacity-80">استقلال الصفوف عن الشعب وقوائمها المستقلة</p>
                 </div>
             </a>
 
-            <a href="assignments.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition group text-gray-800">
+            <a href="assignments.html" class="card-item flex items-center p-5 bg-white/10 border border-white/20 rounded-xl shadow-sm hover:bg-white/20 transition group text-white">
                 <span class="text-3xl ml-4">🔗</span>
                 <div>
-                    <h2 class="font-bold text-lg group-hover:text-indigo-600">توزيع الحصص</h2>
-                    <p class="text-sm text-gray-500">ربط المدرس بالمادة والصف والشعبة وعدد الحصص</p>
+                    <h2 class="font-bold text-lg">توزيع الحصص</h2>
+                    <p class="text-sm opacity-80">ربط المدرس بالمادة والصف والشعبة وعدد الحصص</p>
                 </div>
             </a>
 
-            <a href="generator.html" class="flex items-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition group text-gray-800">
+            <a href="generator.html" class="card-item flex items-center p-5 bg-white/10 border border-white/20 rounded-xl shadow-sm hover:bg-white/20 transition group text-white">
                 <span class="text-3xl ml-4">🖨️</span>
                 <div>
-                    <h2 class="font-bold text-lg text-green-600">الطباعة والعرض</h2>
-                    <p class="text-sm text-gray-500">توليد الجداول، التصدير لـ Excel، والطباعة</p>
+                    <h2 class="font-bold text-lg text-emerald-300">الطباعة والعرض</h2>
+                    <p class="text-sm opacity-80">توليد الجداول، التصدير لـ Excel، والطباعة</p>
                 </div>
             </a>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer id="mainFooter" class="bg-white border-t py-4 text-center text-sm text-gray-500 transition-colors duration-300">
+    <footer id="mainFooter" class="bg-slate-800 text-slate-300 border-t border-white/10 py-4 text-center text-sm transition-colors duration-300">
         منظومة بناء الجداول المدرسية الذكية &copy; 2026
     </footer>
 
     <script>
         let settings = JSON.parse(localStorage.getItem('sch_settings')) || { 
             name: 'المدرسة الافتراضية', 
-            pageTheme: 'bg-gray-50 text-gray-800' 
+            pageTheme: 'bg-indigo-900 text-white',
+            cardTheme: 'bg-white/10 border-white/20 text-white hover:bg-white/20',
+            footerTheme: 'bg-slate-800 text-slate-300'
         };
         
         document.getElementById('schoolNameDisplay').innerText = settings.name || 'المدرسة الافتراضية';
@@ -118,34 +123,33 @@
             menu.classList.toggle('hidden');
         }
 
-        // إغلاق القائمة عند النقر خارجها
         window.onclick = function(event) {
             if (!event.target.closest('div.relative')) {
                 document.getElementById('themeMenu').classList.add('hidden');
             }
         }
 
-        function setTheme(pageTheme) {
+        function setTheme(pageTheme, cardTheme, footerTheme) {
             settings.pageTheme = pageTheme;
+            settings.cardTheme = cardTheme;
+            settings.footerTheme = footerTheme;
             localStorage.setItem('sch_settings', JSON.stringify(settings));
-            applyPageTheme();
+            applyTheme();
             toggleThemeMenu();
         }
 
-        function applyPageTheme() {
-            let body = document.getElementById('pageBody');
-            body.className = `${settings.pageTheme || 'bg-gray-50 text-gray-800'} min-h-screen flex flex-col justify-between transition-colors duration-300`;
+        function applyTheme() {
+            document.getElementById('pageBody').className = `${settings.pageTheme} min-h-screen flex flex-col justify-between transition-colors duration-300`;
             
-            // ضبط لون الفوتر ليناسب الثيم الداكن إذا تم اختياره
-            let footer = document.getElementById('mainFooter');
-            if(settings.pageTheme.includes('slate-900')) {
-                footer.className = "bg-slate-800 border-slate-700 py-4 text-center text-sm text-slate-400 transition-colors duration-300";
-            } else {
-                footer.className = "bg-white border-t py-4 text-center text-sm text-gray-500 transition-colors duration-300";
-            }
+            let cards = document.querySelectorAll('.card-item');
+            cards.forEach(card => {
+                card.className = `card-item flex items-center p-5 rounded-xl shadow-sm transition group border ${settings.cardTheme}`;
+            });
+
+            document.getElementById('mainFooter').className = `${settings.footerTheme} border-t border-white/10 py-4 text-center text-sm transition-colors duration-300`;
         }
 
-        if(settings.pageTheme) applyPageTheme();
+        if(settings.pageTheme) applyTheme();
     </script>
 </body>
 </html>
