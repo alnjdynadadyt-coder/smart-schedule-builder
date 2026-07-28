@@ -49,6 +49,22 @@
                     <input type="number" id="dailyClasses" min="4" max="8" value="7" required class="w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-white/50">
                 </div>
 
+                <!-- زر واختيار لون خاص لهذه الصفحة -->
+                <div>
+                    <label class="block text-sm font-semibold mb-2">🎨 لون ثيم هذه الصفحة:</label>
+                    <select id="pageThemeSelect" onchange="changePageTheme(this.value)" class="w-full px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-white/50">
+                        <option value="bg-indigo-900">نيللي غامق (افتراضي)</option>
+                        <option value="bg-slate-900">الداكن الليلي</option>
+                        <option value="bg-emerald-900">زمردي غامق</option>
+                        <option value="bg-purple-900">أرجواني داكن</option>
+                        <option value="bg-blue-600">أزرق حالم</option>
+                        <option value="bg-teal-800">تيل مميز</option>
+                        <option value="bg-rose-900">وردي داكن</option>
+                        <option value="bg-slate-100 text-gray-900">رمادي فاتح نظيف</option>
+                        <option value="bg-amber-50 text-gray-900">أصفر ذهبي ناعم</option>
+                    </select>
+                </div>
+
                 <div class="flex gap-3 pt-4">
                     <button type="submit" class="flex-grow bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg transition cursor-pointer">
                         💾 حفظ الإعدادات
@@ -60,7 +76,7 @@
             </form>
             
             <div id="saveAlert" class="mt-4 hidden p-3 bg-emerald-500/30 border border-emerald-400 text-emerald-100 rounded-xl text-center text-sm">
-                تم حفظ الإعدادات بنجاح!
+                تم حفظ الإعدادات وتطبيق اللون بنجاح!
             </div>
             <div id="clearAlert" class="mt-4 hidden p-3 bg-rose-500/30 border border-rose-400 text-rose-100 rounded-xl text-center text-sm">
                 تم حذف وتفريغ جميع البيانات بنجاح!
@@ -78,45 +94,58 @@
         let settings = JSON.parse(localStorage.getItem('sch_settings')) || { 
             name: '', 
             days: '5',
-            dailyClasses: 7
+            dailyClasses: 7,
+            theme: 'bg-indigo-900'
         };
 
-        // دالة تطبيق الثيم الموحد (تقرأ نفس المفتاح الذي تستخدمه الصفحة الرئيسية للثيمات)
-        function applyGlobalTheme() {
-            // التحقق من مفاتيح الثيم الشائع تخزينها في القائمة الرئيسية
-            let currentThemeClass = localStorage.getItem('selected_theme_class') || localStorage.getItem('page_theme') || 'bg-indigo-950 text-white';
-            
-            // تطبيق اللون الأساسي على الجسم
-            document.getElementById('pageBody').className = `${currentThemeClass} min-h-screen flex flex-col justify-between transition-colors duration-300`;
-            
-            // ضبط لون البطاقة والفوندر بما يتناسب مع الثيم العام
+        // تطبيق اللون الخاص بصفحة الإعدادات المحفوظ مسبقاً
+        function applyPageTheme(themeClass) {
+            let body = document.getElementById('pageBody');
             let card = document.getElementById('cardContainer');
             let footer = document.getElementById('mainFooter');
+            let selectBox = document.getElementById('pageThemeSelect');
+
+            // تنظيف classes القديمة للون
+            body.className = `${themeClass} min-h-screen flex flex-col justify-between transition-colors duration-300`;
             
-            if (currentThemeClass.includes('white') || currentThemeClass.includes('slate-100') || currentThemeClass.includes('amber-50')) {
+            if (themeClass.includes('slate-100') || themeClass.includes('amber-50')) {
                 // ثيمات فاتحة
-                card.className = "p-6 rounded-2xl shadow-xl border bg-white/80 border-gray-200 text-gray-800 backdrop-blur-md";
+                body.className += " text-gray-900";
+                card.className = "p-6 rounded-2xl shadow-xl border bg-white/80 border-gray-300 text-gray-900 backdrop-blur-md";
                 footer.className = "bg-gray-200 text-gray-700 border-t border-gray-300 py-4 text-center text-sm transition-colors duration-300";
+                selectBox.className = "w-full px-4 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500";
             } else {
-                // ثيمات داكنة/غامقة
+                // ثيمات داكنة
+                body.className += " text-white";
                 card.className = "p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md";
                 footer.className = "bg-black/30 text-slate-300 border-t border-white/10 py-4 text-center text-sm transition-colors duration-300";
+                selectBox.className = "w-full px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-white/50";
             }
         }
-        
-        applyGlobalTheme();
 
-        // تعبئة الحقول بالقيم المخزنة
+        // عند تغيير اللون من القائمة المنسدلة مباشرة
+        function changePageTheme(colorClass) {
+            settings.theme = colorClass;
+            applyPageTheme(colorClass);
+        }
+
+        // تعبئة الحقول والقيم المخزنة عند التحميل
         document.getElementById('schoolName').value = settings.name || '';
         document.getElementById('schoolDays').value = settings.days || '5';
         document.getElementById('dailyClasses').value = settings.dailyClasses || 7;
         document.getElementById('schoolNameHeader').innerText = settings.name || '';
+        
+        if(settings.theme) {
+            document.getElementById('pageThemeSelect').value = settings.theme;
+            applyPageTheme(settings.theme);
+        }
 
         function saveSettings(event) {
             event.preventDefault();
             settings.name = document.getElementById('schoolName').value;
             settings.days = document.getElementById('schoolDays').value;
             settings.dailyClasses = document.getElementById('dailyClasses').value;
+            settings.theme = document.getElementById('pageThemeSelect').value;
             
             localStorage.setItem('sch_settings', JSON.stringify(settings));
             document.getElementById('schoolNameHeader').innerText = settings.name;
@@ -130,11 +159,13 @@
             if(confirm('هل أنت متأكد من رغبتك في حذف وحفظ البيانات؟')) {
                 localStorage.removeItem('sch_settings');
                 
-                settings = { name: '', days: '5', dailyClasses: 7 };
+                settings = { name: '', days: '5', dailyClasses: 7, theme: 'bg-indigo-900' };
                 document.getElementById('schoolName').value = '';
                 document.getElementById('schoolDays').value = '5';
                 document.getElementById('dailyClasses').value = 7;
                 document.getElementById('schoolNameHeader').innerText = '';
+                document.getElementById('pageThemeSelect').value = 'bg-indigo-900';
+                applyPageTheme('bg-indigo-900');
                 
                 let clearAlert = document.getElementById('clearAlert');
                 clearAlert.classList.remove('hidden');
