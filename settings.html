@@ -74,29 +74,39 @@
     </footer>
 
     <script>
-        // تحميل الإعدادات والثيمات المخزنة
+        // تحميل إعدادات المدرسة
         let settings = JSON.parse(localStorage.getItem('sch_settings')) || { 
             name: '', 
             days: '5',
             dailyClasses: 7
         };
 
-        // استرجاع الثيم العام المخزن من الصفحة الرئيسية إن وجد
-        let savedTheme = localStorage.getItem('school_theme');
-
-        function applyTheme() {
-            if (savedTheme) {
-                try {
-                    let themeData = JSON.parse(savedTheme);
-                    if(themeData.page) document.getElementById('pageBody').className = `${themeData.page} min-h-screen flex flex-col justify-between transition-colors duration-300`;
-                    if(themeData.card) document.getElementById('cardContainer').className = `p-6 rounded-2xl shadow-xl border backdrop-blur-md ${themeData.card}`;
-                    if(themeData.footer) document.getElementById('mainFooter').className = `${themeData.footer} border-t border-white/10 py-4 text-center text-sm transition-colors duration-300`;
-                } catch(e) {}
+        // دالة تطبيق الثيم الموحد (تقرأ نفس المفتاح الذي تستخدمه الصفحة الرئيسية للثيمات)
+        function applyGlobalTheme() {
+            // التحقق من مفاتيح الثيم الشائع تخزينها في القائمة الرئيسية
+            let currentThemeClass = localStorage.getItem('selected_theme_class') || localStorage.getItem('page_theme') || 'bg-indigo-950 text-white';
+            
+            // تطبيق اللون الأساسي على الجسم
+            document.getElementById('pageBody').className = `${currentThemeClass} min-h-screen flex flex-col justify-between transition-colors duration-300`;
+            
+            // ضبط لون البطاقة والفوندر بما يتناسب مع الثيم العام
+            let card = document.getElementById('cardContainer');
+            let footer = document.getElementById('mainFooter');
+            
+            if (currentThemeClass.includes('white') || currentThemeClass.includes('slate-100') || currentThemeClass.includes('amber-50')) {
+                // ثيمات فاتحة
+                card.className = "p-6 rounded-2xl shadow-xl border bg-white/80 border-gray-200 text-gray-800 backdrop-blur-md";
+                footer.className = "bg-gray-200 text-gray-700 border-t border-gray-300 py-4 text-center text-sm transition-colors duration-300";
+            } else {
+                // ثيمات داكنة/غامقة
+                card.className = "p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md";
+                footer.className = "bg-black/30 text-slate-300 border-t border-white/10 py-4 text-center text-sm transition-colors duration-300";
             }
         }
-        applyTheme();
+        
+        applyGlobalTheme();
 
-        // تعبئة الحقول بالقيم المخزنة فعلياً
+        // تعبئة الحقول بالقيم المخزنة
         document.getElementById('schoolName').value = settings.name || '';
         document.getElementById('schoolDays').value = settings.days || '5';
         document.getElementById('dailyClasses').value = settings.dailyClasses || 7;
