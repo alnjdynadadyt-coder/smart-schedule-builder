@@ -33,12 +33,12 @@
             <form id="settingsForm" onsubmit="saveSettings(event)" class="space-y-5">
                 <div>
                     <label class="block text-sm font-semibold mb-2">اسم المدرسة:</label>
-                    <input type="text" id="schoolName" required class="w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white/50" placeholder="أدخل اسم المدرسة هنا...">
+                    <input type="text" id="schoolName" required class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="أدخل اسم المدرسة هنا...">
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold mb-2">أيام الدوام الأسبوعي:</label>
-                    <select id="schoolDays" class="w-full px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-white/50">
+                    <select id="schoolDays" class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <option value="5">5 أيام (الأحد إلى الخميس)</option>
                         <option value="6">6 أيام (السبت إلى الخميس)</option>
                     </select>
@@ -46,13 +46,13 @@
 
                 <div>
                     <label class="block text-sm font-semibold mb-2">عدد الحصص الدراسية في اليوم:</label>
-                    <input type="number" id="dailyClasses" min="4" max="8" value="7" required class="w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-white/50">
+                    <input type="number" id="dailyClasses" min="4" max="8" value="7" required class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
 
                 <!-- زر واختيار لون خاص لهذه الصفحة -->
                 <div>
                     <label class="block text-sm font-semibold mb-2">🎨 لون ثيم هذه الصفحة:</label>
-                    <select id="pageThemeSelect" onchange="changePageTheme(this.value)" class="w-full px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-white/50">
+                    <select id="pageThemeSelect" onchange="changePageTheme(this.value)" class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <option value="bg-indigo-900">نيللي غامق (افتراضي)</option>
                         <option value="bg-slate-900">الداكن الليلي</option>
                         <option value="bg-emerald-900">زمردي غامق</option>
@@ -98,38 +98,52 @@
             theme: 'bg-indigo-900'
         };
 
-        // تطبيق اللون الخاص بصفحة الإعدادات المحفوظ مسبقاً
+        // تطبيق اللون الخاص بصفحة الإعدادات مع تعديل ألوان الحقول لتكون سوداء غامقة في الثيمات الفاتحة
         function applyPageTheme(themeClass) {
             let body = document.getElementById('pageBody');
             let card = document.getElementById('cardContainer');
             let footer = document.getElementById('mainFooter');
             let selectBox = document.getElementById('pageThemeSelect');
+            let schoolNameInput = document.getElementById('schoolName');
+            let schoolDaysSelect = document.getElementById('schoolDays');
+            let dailyClassesInput = document.getElementById('dailyClasses');
 
-            // تنظيف classes القديمة للون
             body.className = `${themeClass} min-h-screen flex flex-col justify-between transition-colors duration-300`;
             
             if (themeClass.includes('slate-100') || themeClass.includes('amber-50')) {
-                // ثيمات فاتحة
+                // ثيمات فاتحة (كتابة سوداء غامقة واضحة)
                 body.className += " text-gray-900";
-                card.className = "p-6 rounded-2xl shadow-xl border bg-white/80 border-gray-300 text-gray-900 backdrop-blur-md";
+                card.className = "p-6 rounded-2xl shadow-xl border bg-white/90 border-gray-300 text-gray-900 backdrop-blur-md";
                 footer.className = "bg-gray-200 text-gray-700 border-t border-gray-300 py-4 text-center text-sm transition-colors duration-300";
-                selectBox.className = "w-full px-4 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500";
+                
+                // تنسيق حقول الإدخال لتكون بيضاء بكتابة سوداء غامقة
+                let inputStyle = "w-full px-4 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400";
+                schoolNameInput.className = inputStyle;
+                schoolDaysSelect.className = inputStyle;
+                dailyClassesInput.className = inputStyle;
+                selectBox.className = inputStyle;
             } else {
-                // ثيمات داكنة
+                // ثيمات داكنة (كتابة بيضاء)
                 body.className += " text-white";
                 card.className = "p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md";
                 footer.className = "bg-black/30 text-slate-300 border-t border-white/10 py-4 text-center text-sm transition-colors duration-300";
-                selectBox.className = "w-full px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-white/50";
+                
+                // تنسيق حقول الإدخال لتكون داكنة بكتابة بيضاء
+                let inputStyle = "w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 placeholder-gray-300";
+                let selectStyle = "w-full px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/20 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50";
+                schoolNameInput.className = inputStyle;
+                schoolDaysSelect.className = selectStyle;
+                dailyClassesInput.className = inputStyle;
+                selectBox.className = selectStyle;
             }
         }
 
-        // عند تغيير اللون من القائمة المنسدلة مباشرة
         function changePageTheme(colorClass) {
             settings.theme = colorClass;
             applyPageTheme(colorClass);
         }
 
-        // تعبئة الحقول والقيم المخزنة عند التحميل
+        // تعبئة الحقول والقيم المخزنة
         document.getElementById('schoolName').value = settings.name || '';
         document.getElementById('schoolDays').value = settings.days || '5';
         document.getElementById('dailyClasses').value = settings.dailyClasses || 7;
