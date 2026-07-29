@@ -7,20 +7,23 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-        body { font-family: 'Cairo', sans-serif; }
+        body { font-family: 'Cairo', sans-serif; background-color: #311b92; color: #ffffff; }
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
+            .print-container { background: white !important; color: black !important; border: 1px solid #ccc !important; box-shadow: none !important; }
+            table { border-color: #000 !important; }
+            th, td { border-color: #000 !important; color: #000 !important; }
         }
     </style>
 </head>
-<body id="pageBody" class="bg-indigo-900 text-white min-h-screen flex flex-col justify-between transition-colors duration-300">
+<body class="min-h-screen flex flex-col justify-between">
 
     <!-- Header -->
-    <header class="bg-black/20 backdrop-blur-md shadow-sm py-5 border-b border-white/10 no-print">
+    <header class="bg-black/30 backdrop-blur-md shadow-sm py-4 border-b border-white/10 no-print">
         <div class="container mx-auto px-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <a href="index.html" class="bg-white/20 hover:bg-white/35 text-white px-3 py-2 rounded-lg text-sm transition flex items-center gap-1 shadow">
+                <a href="index.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg text-sm transition flex items-center gap-1 shadow">
                     ⬅️ القائمة الرئيسية
                 </a>
                 <h1 class="text-xl font-bold">📊 توليد وعرض الجداول المدرسية</h1>
@@ -30,35 +33,49 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8 flex-grow max-w-6xl">
+    <main class="container mx-auto px-4 py-8 flex-grow max-w-7xl">
         
-        <!-- أزرار التحكم والتحفيز -->
-        <div class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8 flex flex-wrap gap-4 justify-between items-center no-print">
-            <div>
-                <h2 class="text-lg font-bold mb-1">⚙️ محرك بناء الجداول الذكي</h2>
-                <p class="text-sm opacity-80">اضغط على زر التوليد لبناء جداول الحصص لكل الشعب بناءً على الإسنادات المسجلة.</p>
+        <!-- أزرار التحكم وعرض النماذج -->
+        <div class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8 no-print">
+            <div class="flex flex-wrap gap-4 justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-lg font-bold mb-1">⚙️ محرك بناء الجداول الذكي</h2>
+                    <p class="text-sm opacity-85">اختر طريقة العرض المطلوبة واستعرض الجداول بدقة وفقاً للمخططات المعتمدة.</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="exportToExcel()" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
+                        📊 تصدير Excel
+                    </button>
+                    <button onclick="exportToWord()" class="bg-blue-700 hover:bg-blue-600 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
+                        📝 تصدير Word
+                    </button>
+                    <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
+                        🖨️ طباعة / PDF
+                    </button>
+                </div>
             </div>
-            <div class="flex gap-3">
-                <button onclick="generateSchedules()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition cursor-pointer flex items-center gap-2">
-                    ⚡ توليد الجداول الآن
+
+            <!-- أزرار اختيار نمط العرض -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 border-t border-white/15 pt-4">
+                <button onclick="switchView('class')" id="btnViewClass" class="py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-amber-500 text-slate-900">
+                    📋 النموذج الأول: حسب الصف والشعبة
                 </button>
-                <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-3 rounded-xl shadow-lg transition cursor-pointer flex items-center gap-2">
-                    🖨️ طباعة الجدول
+                <button onclick="switchView('day')" id="btnViewDay" class="py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20 text-white">
+                    📅 النموذج الثاني: حسب اليوم لكافة الشعب
+                </button>
+                <button onclick="switchView('teacher')" id="btnViewTeacher" class="py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20 text-white">
+                    👨‍🏫 النموذج الثالث: حسب جدول المدرس
                 </button>
             </div>
         </div>
 
-        <!-- منطقة عرض الجداول المولدة -->
-        <div id="schedulesOutputContainer" class="space-y-8">
-            <div class="text-center py-12 bg-white/5 rounded-2xl border border-white/10">
-                <p class="text-lg opacity-80">لم يتم توليد الجداول بعد. اضغط على زر "توليد الجداول الآن" للبدء!</p>
-            </div>
-        </div>
+        <!-- منطقة عرض الجداول -->
+        <div id="schedulesOutputContainer" class="space-y-8"></div>
 
     </main>
 
     <!-- Footer -->
-    <footer id="mainFooter" class="bg-slate-800 text-slate-300 border-t border-white/10 py-4 text-center text-sm transition-colors duration-300 no-print">
+    <footer class="bg-black/40 text-slate-300 border-t border-white/10 py-4 text-center text-sm no-print">
         منظومة بناء الجداول المدرسية الذكية &copy; 2026
     </footer>
 
@@ -66,111 +83,253 @@
         let settings = JSON.parse(localStorage.getItem('sch_settings')) || { name: '' };
         document.getElementById('schoolNameHeader').innerText = settings.name || '';
 
-        // أيام الأسبوع الثابتة
-        const daysOfWeek = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
-        const periodsCount = 7; // عدد الحصص اليومية
+        const daysOfWeek = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس']; // تم استبعاد السبت بناءً على الطلب
+        const periodsCount = 7;
+        let currentViewMode = 'class'; // 'class', 'day', 'teacher'
+        let globalMasterSchedule = null;
+
+        function switchView(mode) {
+            currentViewMode = mode;
+            document.getElementById('btnViewClass').className = mode === 'class' ? 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-amber-500 text-slate-900' : 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20 text-white';
+            document.getElementById('btnViewDay').className = mode === 'day' ? 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-amber-500 text-slate-900' : 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20 text-white';
+            document.getElementById('btnViewTeacher').className = mode === 'teacher' ? 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-amber-500 text-slate-900' : 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20 text-white';
+            
+            if (globalMasterSchedule) renderCurrentView();
+        }
+
+        function loadShortcuts() {
+            let teachers = JSON.parse(localStorage.getItem('sch_teachers')) || [];
+            let subjects = JSON.parse(localStorage.getItem('sch_subjects')) || [];
+            let tMap = {}, sMap = {};
+            teachers.forEach(t => tMap[t.name] = t.shortName || t.name);
+            subjects.forEach(s => sMap[s.name] = s.shortName || s.name);
+            return { tMap, sMap };
+        }
 
         function generateSchedules() {
             let distributions = JSON.parse(localStorage.getItem('sch_distributions')) || [];
             let container = document.getElementById('schedulesOutputContainer');
 
             if (distributions.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 bg-rose-500/20 rounded-2xl border border-rose-500/30 text-rose-200">لا توجد إسنادات مسجلة! يرجى إدخال إسنادات المدرسين أولاً من صفحة توزيع الحصص.</div>`;
+                container.innerHTML = `<div class="text-center py-12 bg-rose-500/20 rounded-2xl border border-rose-500/30 text-rose-200">لا توجد إسنادات مسجلة! يرجى إدخال إسنادات المدرسين أولاً.</div>`;
                 return;
             }
 
-            // تجميع الشعب الفرعية لكل صف وإيجاد كافة الشعب المطلوبة
-            let sectionSchedules = {}; // المفتاح: "الصف - الشعبة"
+            let { tMap, sMap } = loadShortcuts();
+            let sectionSchedules = {}; // نموذج الشعب
+            let teacherSchedules = {}; // نموذج المدرسين
 
+            // تهيئة الشعب
             distributions.forEach(item => {
                 let className = item.className;
                 let sections = item.sections || [item.section];
-
                 sections.forEach(sec => {
                     let key = `${className} - شعبة ${sec}`;
                     if (!sectionSchedules[key]) {
-                        sectionSchedules[key] = {
-                            className: className,
-                            section: sec,
-                            grid: {} // الأيام والحصص
-                        };
+                        sectionSchedules[key] = {};
                         daysOfWeek.forEach(day => {
-                            sectionSchedules[key].grid[day] = Array(periodsCount).fill('فراغ');
+                            sectionSchedules[key][day] = Array(periodsCount).fill(null);
                         });
                     }
                 });
             });
 
-            // خوارزمية التوزيع الذكي للحصص لكل شعبة
+            // خوارزمية التوزيع الذكي (منع تكرار المادة في نفس اليوم قدر الإمكان)
             distributions.forEach(item => {
                 let sections = item.sections || [item.section];
-                let subject = item.subject;
-                let teacher = item.teacher;
+                let subjectFull = item.subject;
+                let teacherFull = item.teacher;
+                let subShort = sMap[subjectFull] || subjectFull;
+                let tchShort = tMap[teacherFull] || teacherFull;
                 let weeklyCount = parseInt(item.lessonsCount) || 4;
-                let allowedDays = item.days || daysOfWeek;
+                let allowedDays = item.days && item.days.length > 0 ? item.days.filter(d => d !== 'السبت') : daysOfWeek;
                 let excludedLessons = item.excludedLessons || [];
 
                 sections.forEach(sec => {
-                    let key = `${item.className} - شعبة ${sec}`;
+                    let key = `${className = item.className} - شعبة ${sec}`;
                     if (!sectionSchedules[key]) return;
 
-                    let placedCount = 0;
-                    // محاولة توزيع الحصص حسب الأيام المتاحة
-                    for (let d = 0; d < allowedDays.length && placedCount < weeklyCount; d++) {
-                        let day = allowedDays[d];
-                        for (let p = 0; p < periodsCount && placedCount < weeklyCount; p++) {
-                            let periodName = `الدرس ${p + 1}`;
-                            // التحقق من أن الحصة غير مستثناة وأن المكان فارغ
-                            if (!excludedLessons.includes(periodName) && sectionSchedules[key].grid[day][p] === 'فراغ') {
-                                sectionSchedules[key].grid[day][p] = `${subject}<br><span class="text-xs opacity-75">(${teacher})</span>`;
-                                placedCount++;
+                    let placed = 0;
+                    // التوزيع بمرور على الأيام لتجنب تكرار نفس المادة في يوم واحد إلا عند الضرورة (إذا زادت الحصص عن عدد الأيام)
+                    let pass = 0;
+                    while (placed < weeklyCount && pass < 5) {
+                        for (let d = 0; d < allowedDays.length && placed < weeklyCount; d++) {
+                            let day = allowedDays[d];
+                            for (let p = 0; p < periodsCount && placed < weeklyCount; p++) {
+                                let periodName = `الدرس ${p + 1}`;
+                                if (!excludedLessons.includes(periodName) && sectionSchedules[key][day][p] === null) {
+                                    // التحقق من عدم وجود نفس المادة في نفس اليوم إذا أمكن
+                                    if (pass === 0) {
+                                        let dayHasSubject = sectionSchedules[key][day].some(cell => cell && cell.subject === subShort);
+                                        if (dayHasSubject) continue; // تخطي هذا اليوم محاولة لتوزيعها على أيام مختلفة
+                                    }
+                                    
+                                    sectionSchedules[key][day][p] = {
+                                        subject: subShort,
+                                        teacher: tchShort,
+                                        fullClassName: key
+                                    };
+                                    placed++;
+                                }
                             }
+                        }
+                        pass++;
+                    }
+                });
+            });
+
+            // بناء جدول المدرسين بناءً على ما تم توزيعه للشعب
+            Object.keys(sectionSchedules).forEach(secKey => {
+                daysOfWeek.forEach(day => {
+                    for (let p = 0; p < periodsCount; p++) {
+                        let cell = sectionSchedules[secKey][day][p];
+                        if (cell) {
+                            let tch = cell.teacher;
+                            if (!teacherSchedules[tch]) {
+                                teacherSchedules[tch] = {};
+                                daysOfWeek.forEach(d => teacherSchedules[tch][d] = Array(periodsCount).fill(null));
+                            }
+                            teacherSchedules[tch][day][p] = {
+                                subject: cell.subject,
+                                classInfo: secKey
+                            };
                         }
                     }
                 });
             });
 
-            // رسم الجداول للشعب في الواجهة
-            container.innerHTML = '';
-            let keys = Object.keys(sectionSchedules);
-
-            if (keys.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 bg-white/5 rounded-2xl border border-white/10">لا توجد بيانات كافية لتوليد الجداول.</div>`;
-                return;
-            }
-
-            keys.forEach(key => {
-                let schData = sectionSchedules[key];
-                let tableHtml = `
-                    <div class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
-                        <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-300">📅 جدول حصص: ${key}</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-center border-collapse text-sm border border-white/20">
-                               <thead>
-                                    <tr class="bg-black/30 border-b border-white/20">
-                                        <th class="py-3 px-3 border border-white/20 font-bold">اليوم / الحصة</th>
-                `;
-                for (let i = 1; i <= periodsCount; i++) {
-                    tableHtml += `<th class="py-3 px-2 border border-white/20">الدرس ${i}</th>`;
-                }
-                tableHtml += `</tr></thead><tbody>`;
-
-                daysOfWeek.forEach(day => {
-                    tableHtml += `<tr class="border-b border-white/10 hover:bg-white/5"><td class="py-3 px-3 border border-white/20 font-bold bg-black/20">${day}</td>`;
-                    for (let p = 0; p < periodsCount; p++) {
-                        let cellContent = schData.grid[day][p];
-                        let bgClass = cellContent === 'فراغ' ? 'opacity-40' : 'font-semibold bg-white/10';
-                        tableHtml += `<td class="py-3 px-2 border border-white/20 ${bgClass}">${cellContent}</td>`;
-                    }
-                    tableHtml += `</tr>`;
-                });
-
-                tableHtml += `</tbody></table></div></div>`;
-                container.innerHTML += tableHtml;
-            });
+            globalMasterSchedule = { sectionSchedules, teacherSchedules };
+            renderCurrentView();
         }
 
-        // توليد الجداول تلقائياً عند فتح الصفحة إن وجدت البيانات
+        function renderCurrentView() {
+            let container = document.getElementById('schedulesOutputContainer');
+            container.innerHTML = '';
+            if (!globalMasterSchedule) return;
+
+            if (currentViewMode === 'class') {
+                // النموذج الأول: حسب الصف والشعبة (الأيام عمودياً، الحصص أفقياً)
+                let keys = Object.keys(globalMasterSchedule.sectionSchedules);
+                keys.forEach(key => {
+                    let schData = globalMasterSchedule.sectionSchedules[key];
+                    let html = `
+                        <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
+                            <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-300">📅 جدول حصص: ${key}</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-center border-collapse text-sm border border-white/30">
+                                    <thead>
+                                        <tr class="bg-black/40 border-b border-white/30 text-white font-bold">
+                                            <th class="py-3 px-3 border border-white/30">اليوم / الحصة</th>`;
+                    for (let i = 1; i <= periodsCount; i++) {
+                        html += `<th class="py-3 px-2 border border-white/30">الدرس ${i}</th>`;
+                    }
+                    html += `</tr></thead><tbody>`;
+
+                    daysOfWeek.forEach(day => {
+                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20 text-white">${day}</td>`;
+                        for (let p = 0; p < periodsCount; p++) {
+                            let cell = schData[day][p];
+                            let content = cell ? `<span class="font-bold text-amber-200">${cell.subject}</span><br><span class="text-xs text-white/90">(${cell.teacher})</span>` : `<span class="text-white/40">فراغ</span>`;
+                            html += `<td class="py-3 px-2 border border-white/30">${content}</td>`;
+                        }
+                        html += `</tr>`;
+                    });
+                    html += `</tbody></table></div></div>`;
+                    container.innerHTML += html;
+                });
+
+            } else if (currentViewMode === 'day') {
+                // النموذج الثاني: حسب اليوم لكافة الشعب (الشعب يميناً، والحصص أفقياً)
+                let sectionKeys = Object.keys(globalMasterSchedule.sectionSchedules);
+                daysOfWeek.forEach(day => {
+                    let html = `
+                        <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
+                            <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-300">📅 جدول يوم: ${day} (كافة الشعب)</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-center border-collapse text-sm border border-white/30">
+                                    <thead>
+                                        <tr class="bg-black/40 border-b border-white/30 text-white font-bold">
+                                            <th class="py-3 px-3 border border-white/30">الصف والشعبة</th>`;
+                    for (let i = 1; i <= periodsCount; i++) {
+                        html += `<th class="py-3 px-2 border border-white/30">الدرس ${i}</th>`;
+                    }
+                    html += `</tr></thead><tbody>`;
+
+                    sectionKeys.forEach(secKey => {
+                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20 text-white">${secKey}</td>`;
+                        for (let p = 0; p < periodsCount; p++) {
+                            let cell = globalMasterSchedule.sectionSchedules[secKey][day][p];
+                            let content = cell ? `<span class="font-bold text-amber-200">${cell.subject}</span><br><span class="text-xs text-white/90">(${cell.teacher})</span>` : `<span class="text-white/40">فراغ</span>`;
+                            html += `<td class="py-3 px-2 border border-white/30">${content}</td>`;
+                        }
+                        html += `</tr>`;
+                    });
+                    html += `</tbody></table></div></div>`;
+                    container.innerHTML += html;
+                });
+
+            } else if (currentViewMode === 'teacher') {
+                // النموذج الثالث: حسب جدول المدرس
+                let teachers = Object.keys(globalMasterSchedule.teacherSchedules);
+                if (teachers.length === 0) {
+                    container.innerHTML = `<div class="text-center py-12 bg-white/5 rounded-2xl border border-white/10">لا توجد بيانات للمدرسين.</div>`;
+                    return;
+                }
+
+                teachers.forEach(tch => {
+                    let tchData = globalMasterSchedule.teacherSchedules[tch];
+                    let html = `
+                        <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
+                            <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-300">👨‍🏫 جدول حصص المدرس: ${tch}</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-center border-collapse text-sm border border-white/30">
+                                    <thead>
+                                        <tr class="bg-black/40 border-b border-white/30 text-white font-bold">
+                                            <th class="py-3 px-3 border border-white/30">اليوم / الحصة</th>`;
+                    for (let i = 1; i <= periodsCount; i++) {
+                        html += `<th class="py-3 px-2 border border-white/30">الدرس ${i}</th>`;
+                    }
+                    html += `</tr></thead><tbody>`;
+
+                    daysOfWeek.forEach(day => {
+                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20 text-white">${day}</td>`;
+                        for (let p = 0; p < periodsCount; p++) {
+                            let cell = tchData[day][p];
+                            let content = cell ? `<span class="font-bold text-amber-200">${cell.subject}</span><br><span class="text-xs text-white/90">(${cell.classInfo})</span>` : `<span class="text-white/40">فراغ</span>`;
+                            html += `<td class="py-3 px-2 border border-white/30">${content}</td>`;
+                        }
+                        html += `</tr>`;
+                    });
+                    html += `</tbody></table></div></div>`;
+                    container.innerHTML += html;
+                });
+            }
+        }
+
+        function exportToExcel() {
+            let htmlContent = document.getElementById('schedulesOutputContainer').innerHTML;
+            let blob = new Blob(['\ufeff' + htmlContent], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = 'School_Schedules.xls';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function exportToWord() {
+            let htmlContent = document.getElementById('schedulesOutputContainer').innerHTML;
+            let blob = new Blob(['\ufeff<html dir="rtl"><head><meta charset="utf-8"></head><body>' + htmlContent + '</body></html>'], { type: 'application/msword;charset=utf-8;' });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = 'School_Schedules.doc';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
         window.onload = function() {
             generateSchedules();
         };
