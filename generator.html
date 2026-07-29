@@ -78,15 +78,15 @@
         <div class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 backdrop-blur-md mb-8 no-print space-y-6">
             <div class="flex flex-wrap gap-4 justify-between items-center">
                 <div>
-                    <h2 class="text-lg font-bold mb-1">⚙️ محرك بناء الجداول الذكي (مانع التضارب)</h2>
-                    <p class="text-sm opacity-85">تم منع تضارب المدرسين في نفس الحصة نهائياً مع تخصيص الخطوط والثيم.</p>
+                    <h2 class="text-lg font-bold mb-1">⚙️ محرك بناء الجداول الذكي (مانع التضارب والثبات التام)</h2>
+                    <p class="text-sm opacity-85">يتم حفظ جميع التعديلات والخطوط والألوان تلقائياً عند أي تغيير أو تحديث.</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <button onclick="generateNewSchedule(true)" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
                         🔄 توليد جدول جديد
                     </button>
                     <button onclick="saveTempSchedule()" class="bg-amber-600 hover:bg-amber-500 text-slate-900 text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
-                        💾 حفظ مؤقت
+                        💾 حفظ مؤقت يدوي
                     </button>
                     <button onclick="clearTempSchedule()" class="bg-rose-700 hover:bg-rose-600 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
                         🗑️ مسح وإعادة التوليد
@@ -237,8 +237,6 @@
             let { tMap, sMap, classMap } = loadShortcuts();
             let sectionSchedules = {}; 
             let teacherSchedules = {}; 
-            
-            // مصفوفة تتبع لجدولة المدرسين لمنع التضارب الزمني نهائياً: teacherBusyTracker[teacherName][day][period] = true
             let teacherBusyTracker = {};
 
             distributions.forEach(item => {
@@ -256,7 +254,6 @@
                 });
             });
 
-            // ترتيب الإسنادات لضمان العدالة في التوزيع وتجنب حجز المدرسين بالكامل لصالح شعبة واحدة مبكرة
             let sortedDistributions = [...distributions].sort((a, b) => (parseInt(b.lessonsCount) || 4) - (parseInt(a.lessonsCount) || 4));
 
             sortedDistributions.forEach(item => {
@@ -287,32 +284,25 @@
                                 let p = periodIndices[i];
                                 let periodName = `الدرس ${p + 1}`;
                                 
-                                // 1. التحقق من عدم استبعاد الحصة
                                 if (excludedLessons.includes(periodName)) continue;
-                                
-                                // 2. التحقق من خلو شعبة الطلاب في هذا اليوم والحصة
                                 if (sectionSchedules[key][day][p] !== null) continue;
 
-                                // 3. مانع التضارب: التأكد من أن المدرس ليس مشغولاً في مدرسة أخرى أو شعبة أخرى في نفس اليوم والحصة
                                 if (!teacherBusyTracker[tchShort]) teacherBusyTracker[tchShort] = {};
                                 if (!teacherBusyTracker[tchShort][day]) teacherBusyTracker[tchShort][day] = Array(periodsCount).fill(false);
                                 
-                                if (teacherBusyTracker[tchShort][day][p]) continue; // المدرس مشغول مع شعبة أخرى!
+                                if (teacherBusyTracker[tchShort][day][p]) continue; 
 
-                                // 4. منع تكرار نفس المادة في نفس اليوم للشعبة الواحدة (في التمريرة الأولى)
                                 if (pass === 0) {
                                     let dayHasSubject = sectionSchedules[key][day].some(cell => cell && cell.subject === subShort);
                                     if (dayHasSubject) continue;
                                 }
 
-                                // تسجيل الحصة بنجاح
                                 sectionSchedules[key][day][p] = {
                                     subject: subShort,  
                                     teacher: tchShort,  
                                     fullClassName: key
                                 };
                                 
-                                // حجز وقت المدرس
                                 teacherBusyTracker[tchShort][day][p] = true;
                                 placed++;
                             }
@@ -322,7 +312,6 @@
                 });
             });
 
-            // بناء جدول المدرسين للعرض النهائي
             Object.keys(sectionSchedules).forEach(secKey => {
                 daysOfWeek.forEach(day => {
                     for (let p = 0; p < periodsCount; p++) {
@@ -559,32 +548,35 @@
 
         window.onload = function() {
             let savedState = localStorage.getItem('sch_temp_complete_state');
-            // إعادة توليد تلقائية إذا وجدنا حفظ قديم لضمان تفعيل خوارزمية منع التضارب مباشرة
-            if (savedState && (savedState.includes('شعبة') || !savedState.includes('teacherBusyTracker'))) {
-                localStorage.removeItem('sch_temp_complete_state');
-                savedState = null;
-            }
-
+            
             if (savedState) {
-                let parsed = JSON.parse(savedState);
-                globalMasterSchedule = parsed.master;
-                if (parsed.prefs) {
-                    document.getElementById('fontFamilySubject').value = parsed.prefs.fSub || "'Cairo', sans-serif";
-                    document.getElementById('fontSizeSubject').value = parsed.prefs.sSub || "16px";
-                    document.getElementById('fontColorSubject').value = parsed.prefs.cSub || "#fde047";
-                    document.getElementById('fontFamilyTeacher').value = parsed.prefs.fTch || "'Cairo', sans-serif";
-                    document.getElementById('fontSizeTeacher').value = parsed.prefs.sTch || "14px";
-                    document.getElementById('fontColorTeacher').value = parsed.prefs.cTch || "#ffffff";
-                    if (parsed.prefs.theme) {
-                        document.getElementById('pageThemeColor').value = parsed.prefs.theme;
-                        applyPageTheme();
+                try {
+                    let parsed = JSON.parse(savedState);
+                    if (parsed && parsed.master) {
+                        globalMasterSchedule = parsed.master;
+                        if (parsed.prefs) {
+                            if(parsed.prefs.fSub) document.getElementById('fontFamilySubject').value = parsed.prefs.fSub;
+                            if(parsed.prefs.sSub) document.getElementById('fontSizeSubject').value = parsed.prefs.sSub;
+                            if(parsed.prefs.cSub) document.getElementById('fontColorSubject').value = parsed.prefs.cSub;
+                            if(parsed.prefs.fTch) document.getElementById('fontFamilyTeacher').value = parsed.prefs.fTch;
+                            if(parsed.prefs.sTch) document.getElementById('fontSizeTeacher').value = parsed.prefs.sTch;
+                            if(parsed.prefs.cTch) document.getElementById('fontColorTeacher').value = parsed.prefs.cTch;
+                            if(parsed.prefs.theme) {
+                                document.getElementById('pageThemeColor').value = parsed.prefs.theme;
+                                applyPageTheme();
+                            }
+                        }
+                        applyStylingPreferences();
+                        renderCurrentView();
+                        return;
                     }
+                } catch(e) {
+                    console.error(e);
                 }
-                applyStylingPreferences();
-                renderCurrentView();
-            } else {
-                generateNewSchedule(false);
             }
+            
+            // في حال لم يوجد حفظ مسبق، يتم التوليد لأول مرة
+            generateNewSchedule(false);
         };
     </script>
 </body>
