@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>توليد وعرض الجداول المدرسية - منظومة بناء الجداول</title>
+    <title>توليد وعرض الجداول المدرسية - aSc Style</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&family=Tajawal:wght@400;700&family=Readex+Pro:wght@400;600&family=Changa:wght@400;600&family=El+Messiri:wght@400;700&display=swap');
         
-        body { font-family: 'Cairo', sans-serif; background-color: #311b92; color: #ffffff; direction: rtl; text-align: right; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--page-bg, #311b92); color: #ffffff; direction: rtl; text-align: right; transition: background-color 0.3s ease; }
 
         .custom-subject-style {
             font-family: var(--sub-font, 'Cairo');
@@ -41,7 +41,7 @@
                 <a href="index.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg text-sm transition flex items-center gap-1 shadow">
                     ⬅️ القائمة الرئيسية
                 </a>
-                <h1 class="text-xl font-bold">📊 توليد وعرض الجداول المدرسية</h1>
+                <h1 class="text-xl font-bold">📊 توليد وعرض الجداول المدرسية (aSc Engine)</h1>
             </div>
             <span id="schoolNameHeader" class="text-sm font-semibold opacity-90"></span>
         </div>
@@ -50,14 +50,17 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8 flex-grow max-w-7xl">
         
-        <!-- لوحة التحكم في العرض والتنسيق والخطوط -->
+        <!-- لوحة التحكم في العرض والتنسيق والخطوط والثيم -->
         <div class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8 no-print space-y-6">
             <div class="flex flex-wrap gap-4 justify-between items-center">
                 <div>
                     <h2 class="text-lg font-bold mb-1">⚙️ محرك بناء الجداول الذكي ولوحة التنسيق</h2>
-                    <p class="text-sm opacity-85">تحكم بطرق العرض، تخصيص الخطوط بدقة، والحفظ المؤقت والتصدير.</p>
+                    <p class="text-sm opacity-85">تحكم بطرق العرض، تخصيص الخطوط بدقة، الثيم، والحفظ المؤقت والتوليد.</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
+                    <button onclick="generateNewSchedule()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
+                        🔄 توليد جدول جديد
+                    </button>
                     <button onclick="saveTempSchedule()" class="bg-amber-600 hover:bg-amber-500 text-slate-900 text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
                         💾 حفظ مؤقت
                     </button>
@@ -89,8 +92,8 @@
                 </button>
             </div>
 
-            <!-- لوحة تحكم تخصيص الخطوط والأحجام (14 إلى 23) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-black/20 p-4 rounded-xl border border-white/10">
+            <!-- لوحة تحكم تخصيص الخطوط، الأحجام والثيم -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 bg-black/20 p-4 rounded-xl border border-white/10 items-center">
                 <div>
                     <label class="block text-xs font-bold mb-1 opacity-90">نوع خط المادة:</label>
                     <select id="fontFamilySubject" onchange="applyStylingPreferences()" class="w-full bg-slate-800 text-white text-xs p-2 rounded-lg border border-white/20">
@@ -106,16 +109,9 @@
                     <label class="block text-xs font-bold mb-1 opacity-90">حجم ولون خط المادة:</label>
                     <div class="flex gap-2">
                         <select id="fontSizeSubject" onchange="applyStylingPreferences()" class="w-1/2 bg-slate-800 text-white text-xs p-2 rounded-lg border border-white/20">
-                            <option value="14px">14</option>
-                            <option value="15px">15</option>
-                            <option value="16px" selected>16</option>
-                            <option value="17px">17</option>
-                            <option value="18px">18</option>
-                            <option value="19px">19</option>
-                            <option value="20px">20</option>
-                            <option value="21px">21</option>
-                            <option value="22px">22</option>
-                            <option value="23px">23</option>
+                            <option value="14px">14</option><option value="15px">15</option><option value="16px" selected>16</option>
+                            <option value="17px">17</option><option value="18px">18</option><option value="19px">19</option>
+                            <option value="20px">20</option><option value="21px">21</option><option value="22px">22</option><option value="23px">23</option>
                         </select>
                         <input type="color" id="fontColorSubject" value="#fde047" onchange="applyStylingPreferences()" class="w-1/2 h-9 bg-transparent cursor-pointer rounded-lg border border-white/20 p-1">
                     </div>
@@ -135,19 +131,16 @@
                     <label class="block text-xs font-bold mb-1 opacity-90">حجم ولون خط المدرس:</label>
                     <div class="flex gap-2">
                         <select id="fontSizeTeacher" onchange="applyStylingPreferences()" class="w-1/2 bg-slate-800 text-white text-xs p-2 rounded-lg border border-white/20">
-                            <option value="14px" selected>14</option>
-                            <option value="15px">15</option>
-                            <option value="16px">16</option>
-                            <option value="17px">17</option>
-                            <option value="18px">18</option>
-                            <option value="19px">19</option>
-                            <option value="20px">20</option>
-                            <option value="21px">21</option>
-                            <option value="22px">22</option>
-                            <option value="23px">23</option>
+                            <option value="14px" selected>14</option><option value="15px">15</option><option value="16px">16</option>
+                            <option value="17px">17</option><option value="18px">18</option><option value="19px">19</option>
+                            <option value="20px">20</option><option value="21px">21</option><option value="22px">22</option><option value="23px">23</option>
                         </select>
                         <input type="color" id="fontColorTeacher" value="#ffffff" onchange="applyStylingPreferences()" class="w-1/2 h-9 bg-transparent cursor-pointer rounded-lg border border-white/20 p-1">
                     </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1 opacity-90">🎨 لون ثيم الصفحة:</label>
+                    <input type="color" id="pageThemeColor" value="#311b92" onchange="applyPageTheme()" class="w-full h-9 bg-transparent cursor-pointer rounded-lg border border-white/20 p-1">
                 </div>
             </div>
         </div>
@@ -184,22 +177,12 @@
             let teachers = JSON.parse(localStorage.getItem('sch_teachers')) || [];
             let subjects = JSON.parse(localStorage.getItem('sch_subjects')) || [];
             let tMap = {}, sMap = {};
-            // إجبار النظام على استخدام الاختصار بدلاً من الاسم الكامل
             teachers.forEach(t => tMap[t.name] = (t.shortName && t.shortName.trim() !== '') ? t.shortName : t.name);
             subjects.forEach(s => sMap[s.name] = (s.shortName && s.shortName.trim() !== '') ? s.shortName : s.name);
             return { tMap, sMap };
         }
 
-        function generateSchedules() {
-            // التحقق من وجود حفظ مؤقت مسبقاً
-            let savedMaster = localStorage.getItem('sch_temp_master');
-            if (savedMaster) {
-                globalMasterSchedule = JSON.parse(savedMaster);
-                renderCurrentView();
-                applyStylingPreferences();
-                return;
-            }
-
+        function generateNewSchedule() {
             let distributions = JSON.parse(localStorage.getItem('sch_distributions')) || [];
             let container = document.getElementById('schedulesOutputContainer');
 
@@ -291,19 +274,35 @@
 
             globalMasterSchedule = { sectionSchedules, teacherSchedules };
             renderCurrentView();
-            applyStylingPreferences();
+            saveTempScheduleSilently();
+        }
+
+        function saveTempScheduleSilently() {
+            if (!globalMasterSchedule) return;
+            let saveData = {
+                master: globalMasterSchedule,
+                prefs: {
+                    fSub: document.getElementById('fontFamilySubject').value,
+                    sSub: document.getElementById('fontSizeSubject').value,
+                    cSub: document.getElementById('fontColorSubject').value,
+                    fTch: document.getElementById('fontFamilyTeacher').value,
+                    sTch: document.getElementById('fontSizeTeacher').value,
+                    cTch: document.getElementById('fontColorTeacher').value,
+                    theme: document.getElementById('pageThemeColor').value
+                }
+            };
+            localStorage.setItem('sch_temp_complete_state', JSON.stringify(saveData));
         }
 
         function saveTempSchedule() {
-            if (!globalMasterSchedule) return;
-            localStorage.setItem('sch_temp_master', JSON.stringify(globalMasterSchedule));
-            alert('تم حفظ الجدول مؤقتًا بنجاح!');
+            saveTempScheduleSilently();
+            alert('تم حفظ الجدول وكافة الإعدادات والخطوط مؤقتًا بنجاح!');
         }
 
         function clearTempSchedule() {
-            localStorage.removeItem('sch_temp_master');
-            alert('تم حذف الحفظ المؤقت بنجاح، سيتم إعادة التوليد من الإسنادات.');
-            generateSchedules();
+            localStorage.removeItem('sch_temp_complete_state');
+            alert('تم حذف الحفظ المؤقت بنجاح!');
+            location.reload();
         }
 
         function applyStylingPreferences() {
@@ -322,6 +321,15 @@
             document.documentElement.style.setProperty('--tch-font', fTch);
             document.documentElement.style.setProperty('--tch-size', sTch);
             document.documentElement.style.setProperty('--tch-color', cTch);
+
+            saveTempScheduleSilently();
+        }
+
+        function applyPageTheme() {
+            let themeColor = document.getElementById('pageThemeColor').value;
+            document.documentElement.style.setProperty('--page-bg', themeColor);
+            document.body.style.backgroundColor = themeColor;
+            saveTempScheduleSilently();
         }
 
         function renderCurrentView() {
@@ -429,7 +437,7 @@
             let htmlContent = document.getElementById('schedulesOutputContainer').innerHTML;
             let excelWrapper = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/1999/xlink">
             <head><meta charset="utf-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>School Schedules</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head>
-            <body dir="rtl"><div style="direction: rtl; text-align: right;">${htmlContent}</div></body></html>`;
+            <body dir="rtl"><div style="direction: rtl; text-align: right; unicode-bidi: embed;">${htmlContent}</div></body></html>`;
             
             let blob = new Blob(['\ufeff' + excelWrapper], { type: 'application/vnd.ms-excel;charset=utf-8;' });
             let url = URL.createObjectURL(blob);
@@ -448,11 +456,11 @@
             <style>
                 body { direction: rtl; text-align: right; font-family: 'Cairo', Arial, sans-serif; }
                 table { border-collapse: collapse; width: 100%; margin-bottom: 20px; direction: rtl; }
-                th, td { border: 1px solid windowtext; padding: 8px; text-align: center; font-size: 11pt; }
+                th, td { border: 1px solid windowtext; padding: 8px; text-align: center; font-size: 11pt; direction: rtl; }
                 th { background-color: #f2f2f2; }
             </style>
             </head>
-            <body dir="rtl"><div style="direction: rtl; text-align: right;">${htmlContent}</div></body></html>`;
+            <body dir="rtl"><div style="direction: rtl; text-align: right; unicode-bidi: embed;">${htmlContent}</div></body></html>`;
 
             let blob = new Blob(['\ufeff' + wordWrapper], { type: 'application/msword;charset=utf-8;' });
             let url = URL.createObjectURL(blob);
@@ -465,7 +473,28 @@
         }
 
         window.onload = function() {
-            generateSchedules();
+            let savedState = localStorage.getItem('sch_temp_complete_state');
+            if (savedState) {
+                let parsed = JSON.parse(savedState);
+                globalMasterSchedule = parsed.master;
+                if (parsed.prefs) {
+                    document.getElementById('fontFamilySubject').value = parsed.prefs.fSub;
+                    document.getElementById('fontSizeSubject').value = parsed.prefs.sSub;
+                    document.getElementById('fontColorSubject').value = parsed.prefs.cSub;
+                    document.getElementById('fontFamilyTeacher').value = parsed.prefs.fTch;
+                    document.getElementById('fontSizeTeacher').value = parsed.prefs.sTch;
+                    document.getElementById('fontColorTeacher').value = parsed.prefs.cTch;
+                    if (parsed.prefs.theme) {
+                        document.getElementById('pageThemeColor').value = parsed.prefs.theme;
+                        document.documentElement.style.setProperty('--page-bg', parsed.prefs.theme);
+                        document.body.style.backgroundColor = parsed.prefs.theme;
+                    }
+                }
+                applyStylingPreferences();
+                renderCurrentView();
+            } else {
+                generateNewSchedule();
+            }
         };
     </script>
 </body>
