@@ -60,25 +60,25 @@
                         </select>
                     </div>
 
-                    <!-- اختيار الشعبة -->
+                    <!-- عدد الحصص الأسبوعية -->
                     <div>
-                        <label class="block text-sm font-semibold mb-2">👥 اختر الشعبة:</label>
-                        <select id="selectSection" required class="w-full px-4 py-2.5 rounded-xl bg-black/20 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="">-- اختر الشعبة --</option>
-                        </select>
+                        <label class="block text-sm font-semibold mb-2">🔢 عدد الحصص الأسبوعية لهذه المادة:</label>
+                        <input type="number" id="lessonsCount" min="1" max="15" value="4" required class="w-full px-4 py-2.5 rounded-xl bg-black/20 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
                 </div>
 
-                <!-- عدد الحصص الأسبوعية للمادة -->
-                <div>
-                    <label class="block text-sm font-semibold mb-2">🔢 عدد الحصص الأسبوعية لهذه المادة:</label>
-                    <input type="number" id="lessonsCount" min="1" max="15" value="4" required class="w-full px-4 py-2.5 rounded-xl bg-black/20 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <!-- اختيار الشعب (متعددة دفعة واحدة) -->
+                <div class="border-t border-white/20 pt-4 mt-4">
+                    <label class="block text-sm font-semibold mb-3 text-amber-300">👥 اختر الشعب (يمكن تحديد عدة شعب دفعة واحدة):</label>
+                    <div id="sectionsCheckboxesContainer" class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <!-- تُعبأ ديناميكياً -->
+                    </div>
                 </div>
 
                 <!-- قسم الصلاحيات والأيام -->
                 <div class="border-t border-white/20 pt-4 mt-4">
                     <h3 class="text-sm font-bold mb-3 text-amber-300">⚙️ أيام الدوام المتاحة:</h3>
-                    <div id="daysCheckboxes" class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
                         <label class="flex items-center gap-2 cursor-pointer bg-black/20 p-2.5 rounded-xl border border-white/10"><input type="checkbox" name="workDays" value="السبت" checked class="w-4 h-4 rounded"> السبت</label>
                         <label class="flex items-center gap-2 cursor-pointer bg-black/20 p-2.5 rounded-xl border border-white/10"><input type="checkbox" name="workDays" value="الأحد" checked class="w-4 h-4 rounded"> الأحد</label>
                         <label class="flex items-center gap-2 cursor-pointer bg-black/20 p-2.5 rounded-xl border border-white/10"><input type="checkbox" name="workDays" value="الإثنين" checked class="w-4 h-4 rounded"> الإثنين</label>
@@ -88,7 +88,7 @@
                     </div>
                 </div>
 
-                <!-- الحصص المستثناة (تحديد الدروس 1 إلى 7) -->
+                <!-- الحصص المستثناة (الدروس 1 إلى 7) -->
                 <div class="border-t border-white/20 pt-4 mt-4">
                     <h3 class="text-sm font-bold mb-3 text-amber-300">🚫 الحصص المستثناة أو المحظورة (اختيار الدروس التي لا يمكن التدريس فيها):</h3>
                     <div class="grid grid-cols-4 md:grid-cols-7 gap-2 text-sm text-center">
@@ -102,7 +102,7 @@
                     </div>
                 </div>
 
-                <!-- اختيار لون ثيم هذه الصفحة -->
+                <!-- اختيار لون ثيم الصفحة -->
                 <div>
                     <label class="block text-sm font-semibold mb-2">🎨 لون ثيم هذه الصفحة:</label>
                     <select id="pageThemeSelect" onchange="changePageTheme(this.value)" class="w-full px-4 py-2.5 rounded-xl bg-black/20 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold">
@@ -125,7 +125,7 @@
             </form>
         </div>
 
-        <!-- جدول عرض التوزيعات -->
+        <!-- جدول التوزيعات المسجلة -->
         <div id="tableContainer" class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
             <h2 class="text-lg font-bold mb-4 border-b pb-2 border-white/25">قائمة توزيع الحصص والصلاحيات المسجلة</h2>
             
@@ -135,13 +135,13 @@
                         <tr class="border-b border-white/20 opacity-90">
                             <th class="py-2 px-3">المدرس</th>
                             <th class="py-2 px-3">المادة (الحصص)</th>
-                            <th class="py-2 px-3">الصف والشعبة</th>
+                            <th class="py-2 px-3">الصف والشعب</th>
                             <th class="py-2 px-3">الأيام والحصص المستثناة</th>
                             <th class="py-2 px-3 text-center">الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody id="distributionTableBody">
-                        <!-- تضاف البيانات هنا ديناميكياً -->
+                        <!-- تضاف البيانات هنا -->
                     </tbody>
                 </table>
             </div>
@@ -150,7 +150,7 @@
             </div>
         </div>
 
-        <!-- أزرار الحفظ والحذف العامة أسفل الصفحة -->
+        <!-- أزرار الحفظ -->
         <div class="flex gap-4">
             <button onclick="saveAllChanges()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition cursor-pointer flex items-center justify-center gap-2">
                 💾 حفظ الإعدادات
@@ -171,7 +171,6 @@
         document.getElementById('schoolNameHeader').innerText = settings.name || '';
 
         function populateDropdowns() {
-            // جلب المدرسين بالأسماء الصحيحة المخزنة في localStorage
             let teachers = JSON.parse(localStorage.getItem('sch_teachers')) || [];
             let subjects = JSON.parse(localStorage.getItem('sch_subjects')) || [];
             let classes = JSON.parse(localStorage.getItem('sch_classes')) || [];
@@ -180,14 +179,12 @@
             let tSelect = document.getElementById('selectTeacher');
             let sSelect = document.getElementById('selectSubject');
             let cSelect = document.getElementById('selectClass');
-            let secSelect = document.getElementById('selectSection');
+            let secContainer = document.getElementById('sectionsCheckboxesContainer');
 
             tSelect.innerHTML = '<option value="">-- اختر المدرس --</option>';
             teachers.forEach(t => {
-                let tName = typeof t === 'object' ? (t.name || t.teacherName || '') : t;
-                if(tName) {
-                    tSelect.innerHTML += `<option value="${tName}">${tName}</option>`;
-                }
+                let tName = typeof t === 'object' ? (t.name || '') : t;
+                if(tName) tSelect.innerHTML += `<option value="${tName}">${tName}</option>`;
             });
 
             sSelect.innerHTML = '<option value="">-- اختر المادة --</option>';
@@ -202,10 +199,16 @@
                 if(cName) cSelect.innerHTML += `<option value="${cName}">${cName}</option>`;
             });
 
-            secSelect.innerHTML = '<option value="">-- اختر الشعبة --</option>';
+            secContainer.innerHTML = '';
             sections.forEach(sec => {
                 let secName = typeof sec === 'object' ? (sec.name || '') : sec;
-                if(secName) secSelect.innerHTML += `<option value="${secName}">شعبة ${secName}</option>`;
+                if(secName) {
+                    secContainer.innerHTML += `
+                        <label class="flex items-center gap-2 cursor-pointer bg-black/20 p-2.5 rounded-xl border border-white/10 hover:bg-black/30">
+                            <input type="checkbox" name="selectSections" value="${secName}" class="w-4 h-4 rounded"> شعبة ${secName}
+                        </label>
+                    `;
+                }
             });
         }
         populateDropdowns();
@@ -213,8 +216,7 @@
         let pageSettings = JSON.parse(localStorage.getItem('distribution_page_settings')) || { theme: 'bg-indigo-900' };
 
         function applyPageTheme(themeClass) {
-            let body = document.getElementById('pageBody');
-            body.className = `${themeClass} text-white min-h-screen flex flex-col justify-between transition-colors duration-300`;
+            document.getElementById('pageBody').className = `${themeClass} text-white min-h-screen flex flex-col justify-between transition-colors duration-300`;
         }
 
         function changePageTheme(colorClass) {
@@ -244,10 +246,11 @@
             distributions.forEach((item, index) => {
                 let tr = document.createElement('tr');
                 tr.className = "border-b border-white/10 hover:bg-white/5 transition";
+                let sectionsText = Array.isArray(item.sections) ? item.sections.join('، ') : item.section;
                 tr.innerHTML = `
                     <td class="py-3 px-3 font-semibold">${item.teacher}</td>
                     <td class="py-3 px-3">${item.subject} <span class="text-xs bg-black/30 px-2 py-0.5 rounded text-amber-300">(${item.lessonsCount} حصص)</span></td>
-                    <td class="py-3 px-3">${item.className} - شعبة ${item.section}</td>
+                    <td class="py-3 px-3">${item.className} <br><span class="text-xs text-amber-200">الشعب: ${sectionsText}</span></td>
                     <td class="py-3 px-3 text-xs opacity-90">
                         <b>الأيام:</b> ${item.days.join(', ')}<br>
                         <b class="text-rose-300">الحصص المستثناة:</b> ${item.excludedLessons && item.excludedLessons.length > 0 ? item.excludedLessons.join(', ') : 'لا يوجد'}
@@ -266,9 +269,16 @@
             let teacher = document.getElementById('selectTeacher').value;
             let subject = document.getElementById('selectSubject').value;
             let className = document.getElementById('selectClass').value;
-            let section = document.getElementById('selectSection').value;
             let lessonsCount = document.getElementById('lessonsCount').value;
             
+            let sections = [];
+            document.querySelectorAll('input[name="selectSections"]:checked').forEach(cb => sections.push(cb.value));
+
+            if(sections.length === 0) {
+                alert('الرجاء اختيار شعبة واحدة على الأقل!');
+                return;
+            }
+
             let days = [];
             document.querySelectorAll('input[name="workDays"]:checked').forEach(cb => days.push(cb.value));
 
@@ -276,7 +286,7 @@
             document.querySelectorAll('input[name="excludedLessons"]:checked').forEach(cb => excludedLessons.push(cb.value));
 
             let editIndex = parseInt(document.getElementById('editIndex').value);
-            let dataObj = { teacher, subject, className, section, lessonsCount, days, excludedLessons };
+            let dataObj = { teacher, subject, className, sections, lessonsCount, days, excludedLessons };
 
             if (editIndex === -1) {
                 distributions.push(dataObj);
@@ -294,9 +304,13 @@
             document.getElementById('selectTeacher').value = item.teacher;
             document.getElementById('selectSubject').value = item.subject;
             document.getElementById('selectClass').value = item.className;
-            document.getElementById('selectSection').value = item.section;
             document.getElementById('lessonsCount').value = item.lessonsCount || 4;
             
+            let targetSections = item.sections || [item.section];
+            document.querySelectorAll('input[name="selectSections"]').forEach(cb => {
+                cb.checked = targetSections.includes(cb.value);
+            });
+
             document.querySelectorAll('input[name="workDays"]').forEach(cb => {
                 cb.checked = item.days.includes(cb.value);
             });
@@ -339,6 +353,7 @@
             document.getElementById('submitBtn').innerText = '➕ إضافة الإسناد والصلاحيات';
             document.querySelectorAll('input[name="workDays"]').forEach(cb => cb.checked = true);
             document.querySelectorAll('input[name="excludedLessons"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[name="selectSections"]').forEach(cb => cb.checked = false);
         }
 
         renderDistributions();
