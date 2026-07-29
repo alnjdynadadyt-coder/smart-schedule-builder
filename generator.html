@@ -8,7 +8,14 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&family=Tajawal:wght@400;700&family=Readex+Pro:wght@400;600&family=Changa:wght@400;600&family=El+Messiri:wght@400;700&display=swap');
         
-        body { font-family: 'Cairo', sans-serif; background-color: var(--page-bg, #311b92); color: #ffffff; direction: rtl; text-align: right; transition: background-color 0.3s ease; }
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--page-bg, #311b92); 
+            color: var(--text-main, #ffffff); 
+            direction: rtl; 
+            text-align: right; 
+            transition: background-color 0.3s ease, color 0.3s ease; 
+        }
 
         .custom-subject-style {
             font-family: var(--sub-font, 'Cairo');
@@ -28,7 +35,6 @@
             .print-container { background: white !important; color: black !important; border: 1px solid #000 !important; box-shadow: none !important; }
             table { border-collapse: collapse !important; width: 100% !important; direction: rtl !important; }
             th, td { border: 1px solid #000 !important; color: #000 !important; background-color: #fff !important; text-align: center !important; }
-            .print-dark-text { color: #000 !important; }
         }
     </style>
 </head>
@@ -51,14 +57,14 @@
     <main class="container mx-auto px-4 py-8 flex-grow max-w-7xl">
         
         <!-- لوحة التحكم في العرض والتنسيق والخطوط والثيم -->
-        <div class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8 no-print space-y-6">
+        <div class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 backdrop-blur-md mb-8 no-print space-y-6">
             <div class="flex flex-wrap gap-4 justify-between items-center">
                 <div>
                     <h2 class="text-lg font-bold mb-1">⚙️ محرك بناء الجداول الذكي ولوحة التنسيق</h2>
                     <p class="text-sm opacity-85">تحكم بطرق العرض، تخصيص الخطوط بدقة، الثيم، والحفظ المؤقت والتوليد.</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <button onclick="generateNewSchedule()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
+                    <button onclick="generateNewSchedule(true)" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
                         🔄 توليد جدول جديد
                     </button>
                     <button onclick="saveTempSchedule()" class="bg-amber-600 hover:bg-amber-500 text-slate-900 text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
@@ -84,10 +90,10 @@
                 <button onclick="switchView('class')" id="btnViewClass" class="py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-amber-500 text-slate-900">
                     📋 النموذج الأول: حسب الصف والشعبة
                 </button>
-                <button onclick="switchView('day')" id="btnViewDay" class="py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20 text-white">
+                <button onclick="switchView('day')" id="btnViewDay" class="py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20">
                     📅 النموذج الثاني: حسب اليوم لكافة الشعب
                 </button>
-                <button onclick="switchView('teacher')" id="btnViewTeacher" class="py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20 text-white">
+                <button onclick="switchView('teacher')" id="btnViewTeacher" class="py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20">
                     👨‍🏫 النموذج الثالث: حسب جدول المدرس
                 </button>
             </div>
@@ -151,7 +157,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-black/40 text-slate-300 border-t border-white/10 py-4 text-center text-sm no-print">
+    <footer class="bg-black/40 border-t border-white/10 py-4 text-center text-sm no-print">
         منظومة بناء الجداول المدرسية الذكية &copy; 2026
     </footer>
 
@@ -166,9 +172,9 @@
 
         function switchView(mode) {
             currentViewMode = mode;
-            document.getElementById('btnViewClass').className = mode === 'class' ? 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-amber-500 text-slate-900' : 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20 text-white';
-            document.getElementById('btnViewDay').className = mode === 'day' ? 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-amber-500 text-slate-900' : 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20 text-white';
-            document.getElementById('btnViewTeacher').className = mode === 'teacher' ? 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-amber-500 text-slate-900' : 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/20 text-white';
+            document.getElementById('btnViewClass').className = mode === 'class' ? 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-amber-500 text-slate-900' : 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/25';
+            document.getElementById('btnViewDay').className = mode === 'day' ? 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-amber-500 text-slate-900' : 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/25';
+            document.getElementById('btnViewTeacher').className = mode === 'teacher' ? 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-amber-500 text-slate-900' : 'py-3 px-4 rounded-xl font-bold text-sm transition shadow cursor-pointer bg-white/10 hover:bg-white/25';
             
             if (globalMasterSchedule) renderCurrentView();
         }
@@ -182,7 +188,7 @@
             return { tMap, sMap };
         }
 
-        function generateNewSchedule() {
+        function generateNewSchedule(isNewAction = false) {
             let distributions = JSON.parse(localStorage.getItem('sch_distributions')) || [];
             let container = document.getElementById('schedulesOutputContainer');
 
@@ -225,10 +231,13 @@
 
                     let placed = 0;
                     let pass = 0;
+                    // خلط عشوائي للحصص لتوليد توزيع مختلف عند كل ضغطة
+                    let shuffledDays = [...allowedDays].sort(() => Math.random() - 0.5);
+
                     while (placed < weeklyCount && pass < 10) {
-                        for (let d = 0; d < allowedDays.length && placed < weeklyCount; d++) {
-                            let day = allowedDays[d];
-                            let periodIndices = [1, 2, 4, 0, 3, 5, 6]; 
+                        for (let d = 0; d < shuffledDays.length && placed < weeklyCount; d++) {
+                            let day = shuffledDays[d];
+                            let periodIndices = [1, 2, 4, 0, 3, 5, 6].sort(() => Math.random() - 0.5); 
                             for (let i = 0; i < periodIndices.length && placed < weeklyCount; i++) {
                                 let p = periodIndices[i];
                                 let periodName = `الدرس ${p + 1}`;
@@ -275,6 +284,9 @@
             globalMasterSchedule = { sectionSchedules, teacherSchedules };
             renderCurrentView();
             saveTempScheduleSilently();
+            if (isNewAction) {
+                alert('🔄 تم توليد جدول جديد بنجاح!');
+            }
         }
 
         function saveTempScheduleSilently() {
@@ -296,12 +308,12 @@
 
         function saveTempSchedule() {
             saveTempScheduleSilently();
-            alert('تم حفظ الجدول وكافة الإعدادات والخطوط مؤقتًا بنجاح!');
+            alert('💾 تم حفظ الجدول وكافة الإعدادات والخطوط مؤقتًا بنجاح!');
         }
 
         function clearTempSchedule() {
             localStorage.removeItem('sch_temp_complete_state');
-            alert('تم حذف الحفظ المؤقت بنجاح!');
+            alert('🗑️ تم حذف الحفظ المؤقت بنجاح!');
             location.reload();
         }
 
@@ -329,6 +341,19 @@
             let themeColor = document.getElementById('pageThemeColor').value;
             document.documentElement.style.setProperty('--page-bg', themeColor);
             document.body.style.backgroundColor = themeColor;
+
+            // حساب السطوع تلقائياً للتحكم بلون الخط الرئيسي لتجنب اختفاء النصوص عند اختيار الثيم الأبيض
+            let r = parseInt(themeColor.substr(1,2), 16);
+            let g = parseInt(themeColor.substr(3,2), 16);
+            let b = parseInt(themeColor.substr(5,2), 16);
+            let brightness = (r * 299 + g * 587 + b * 114) / 1000;
+            
+            if (brightness > 160) {
+                document.documentElement.style.setProperty('--text-main', '#0f172a');
+            } else {
+                document.documentElement.style.setProperty('--text-main', '#ffffff');
+            }
+
             saveTempScheduleSilently();
         }
 
@@ -342,12 +367,12 @@
                 keys.forEach(key => {
                     let schData = globalMasterSchedule.sectionSchedules[key];
                     let html = `
-                        <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
-                            <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-300 print-dark-text">📅 جدول حصص: ${key}</h3>
+                        <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 backdrop-blur-md mb-8">
+                            <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-400">📅 جدول حصص: ${key}</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-center border-collapse text-sm border border-white/30" dir="rtl">
                                     <thead>
-                                        <tr class="bg-black/40 border-b border-white/30 text-white font-bold print-dark-text">
+                                        <tr class="bg-black/30 border-b border-white/30 font-bold">
                                             <th class="py-3 px-3 border border-white/30">اليوم / الحصة</th>`;
                     for (let i = 1; i <= periodsCount; i++) {
                         html += `<th class="py-3 px-2 border border-white/30">الدرس ${i}</th>`;
@@ -355,7 +380,7 @@
                     html += `</tr></thead><tbody>`;
 
                     daysOfWeek.forEach(day => {
-                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20 text-white print-dark-text">${day}</td>`;
+                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20">${day}</td>`;
                         for (let p = 0; p < periodsCount; p++) {
                             let cell = schData[day][p];
                             let content = cell ? `<div style="line-height: 1.3;"><span class="custom-subject-style font-bold">${cell.subject}</span><br><span class="custom-teacher-style">${cell.teacher}</span></div>` : ``;
@@ -371,12 +396,12 @@
                 let sectionKeys = Object.keys(globalMasterSchedule.sectionSchedules);
                 daysOfWeek.forEach(day => {
                     let html = `
-                        <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
-                            <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-300 print-dark-text">📅 جدول يوم: ${day} (كافة الشعب)</h3>
+                        <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 backdrop-blur-md mb-8">
+                            <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-400">📅 جدول يوم: ${day} (كافة الشعب)</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-center border-collapse text-sm border border-white/30" dir="rtl">
                                     <thead>
-                                        <tr class="bg-black/40 border-b border-white/30 text-white font-bold print-dark-text">
+                                        <tr class="bg-black/30 border-b border-white/30 font-bold">
                                             <th class="py-3 px-3 border border-white/30">الصف والشعبة</th>`;
                     for (let i = 1; i <= periodsCount; i++) {
                         html += `<th class="py-3 px-2 border border-white/30">الدرس ${i}</th>`;
@@ -384,7 +409,7 @@
                     html += `</tr></thead><tbody>`;
 
                     sectionKeys.forEach(secKey => {
-                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20 text-white print-dark-text">${secKey}</td>`;
+                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20">${secKey}</td>`;
                         for (let p = 0; p < periodsCount; p++) {
                             let cell = globalMasterSchedule.sectionSchedules[secKey][day][p];
                             let content = cell ? `<div style="line-height: 1.3;"><span class="custom-subject-style font-bold">${cell.subject}</span><br><span class="custom-teacher-style">${cell.teacher}</span></div>` : ``;
@@ -406,12 +431,12 @@
                 teachers.forEach(tch => {
                     let tchData = globalMasterSchedule.teacherSchedules[tch];
                     let html = `
-                        <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
-                            <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-300 print-dark-text">👨‍🏫 جدول حصص المدرس: ${tch}</h3>
+                        <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 backdrop-blur-md mb-8">
+                            <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-400">👨‍🏫 جدول حصص المدرس: ${tch}</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-center border-collapse text-sm border border-white/30" dir="rtl">
                                     <thead>
-                                        <tr class="bg-black/40 border-b border-white/30 text-white font-bold print-dark-text">
+                                        <tr class="bg-black/30 border-b border-white/30 font-bold">
                                             <th class="py-3 px-3 border border-white/30">اليوم / الحصة</th>`;
                     for (let i = 1; i <= periodsCount; i++) {
                         html += `<th class="py-3 px-2 border border-white/30">الدرس ${i}</th>`;
@@ -419,7 +444,7 @@
                     html += `</tr></thead><tbody>`;
 
                     daysOfWeek.forEach(day => {
-                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20 text-white print-dark-text">${day}</td>`;
+                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20">${day}</td>`;
                         for (let p = 0; p < periodsCount; p++) {
                             let cell = tchData[day][p];
                             let content = cell ? `<div style="line-height: 1.3;"><span class="custom-subject-style font-bold">${cell.subject}</span><br><span class="custom-teacher-style">${cell.classInfo}</span></div>` : ``;
@@ -437,7 +462,7 @@
             let htmlContent = document.getElementById('schedulesOutputContainer').innerHTML;
             let excelWrapper = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/1999/xlink">
             <head><meta charset="utf-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>School Schedules</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head>
-            <body dir="rtl"><div style="direction: rtl; text-align: right; unicode-bidi: embed;">${htmlContent}</div></body></html>`;
+            <body dir="rtl"><div style="direction: rtl; text-align: right; unicode-bidi: embed; font-family: Cairo, Arial, sans-serif;">${htmlContent}</div></body></html>`;
             
             let blob = new Blob(['\ufeff' + excelWrapper], { type: 'application/vnd.ms-excel;charset=utf-8;' });
             let url = URL.createObjectURL(blob);
@@ -478,22 +503,21 @@
                 let parsed = JSON.parse(savedState);
                 globalMasterSchedule = parsed.master;
                 if (parsed.prefs) {
-                    document.getElementById('fontFamilySubject').value = parsed.prefs.fSub;
-                    document.getElementById('fontSizeSubject').value = parsed.prefs.sSub;
-                    document.getElementById('fontColorSubject').value = parsed.prefs.cSub;
-                    document.getElementById('fontFamilyTeacher').value = parsed.prefs.fTch;
-                    document.getElementById('fontSizeTeacher').value = parsed.prefs.sTch;
-                    document.getElementById('fontColorTeacher').value = parsed.prefs.cTch;
+                    document.getElementById('fontFamilySubject').value = parsed.prefs.fSub || "'Cairo', sans-serif";
+                    document.getElementById('fontSizeSubject').value = parsed.prefs.sSub || "16px";
+                    document.getElementById('fontColorSubject').value = parsed.prefs.cSub || "#fde047";
+                    document.getElementById('fontFamilyTeacher').value = parsed.prefs.fTch || "'Cairo', sans-serif";
+                    document.getElementById('fontSizeTeacher').value = parsed.prefs.sTch || "14px";
+                    document.getElementById('fontColorTeacher').value = parsed.prefs.cTch || "#ffffff";
                     if (parsed.prefs.theme) {
                         document.getElementById('pageThemeColor').value = parsed.prefs.theme;
-                        document.documentElement.style.setProperty('--page-bg', parsed.prefs.theme);
-                        document.body.style.backgroundColor = parsed.prefs.theme;
+                        applyPageTheme();
                     }
                 }
                 applyStylingPreferences();
                 renderCurrentView();
             } else {
-                generateNewSchedule();
+                generateNewSchedule(false);
             }
         };
     </script>
