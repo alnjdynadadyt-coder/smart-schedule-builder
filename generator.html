@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توليد وعرض الجداول المدرسية - منظومة بناء الجداول</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        body { font-family: 'Cairo', sans-serif; }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; }
+        }
+    </style>
+</head>
+<body id="pageBody" class="bg-indigo-900 text-white min-h-screen flex flex-col justify-between transition-colors duration-300">
+
+    <!-- Header -->
+    <header class="bg-black/20 backdrop-blur-md shadow-sm py-5 border-b border-white/10 no-print">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="bg-white/20 hover:bg-white/35 text-white px-3 py-2 rounded-lg text-sm transition flex items-center gap-1 shadow">
+                    ⬅️ القائمة الرئيسية
+                </a>
+                <h1 class="text-xl font-bold">📊 توليد وعرض الجداول المدرسية</h1>
+            </div>
+            <span id="schoolNameHeader" class="text-sm font-semibold opacity-90"></span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 flex-grow max-w-6xl">
+        
+        <!-- أزرار التحكم والتحفيز -->
+        <div class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8 flex flex-wrap gap-4 justify-between items-center no-print">
+            <div>
+                <h2 class="text-lg font-bold mb-1">⚙️ محرك بناء الجداول الذكي</h2>
+                <p class="text-sm opacity-80">اضغط على زر التوليد لبناء جداول الحصص لكل الشعب بناءً على الإسنادات المسجلة.</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="generateSchedules()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition cursor-pointer flex items-center gap-2">
+                    ⚡ توليد الجداول الآن
+                </button>
+                <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-3 rounded-xl shadow-lg transition cursor-pointer flex items-center gap-2">
+                    🖨️ طباعة الجدول
+                </button>
+            </div>
+        </div>
+
+        <!-- منطقة عرض الجداول المولدة -->
+        <div id="schedulesOutputContainer" class="space-y-8">
+            <div class="text-center py-12 bg-white/5 rounded-2xl border border-white/10">
+                <p class="text-lg opacity-80">لم يتم توليد الجداول بعد. اضغط على زر "توليد الجداول الآن" للبدء!</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer id="mainFooter" class="bg-slate-800 text-slate-300 border-t border-white/10 py-4 text-center text-sm transition-colors duration-300 no-print">
+        منظومة بناء الجداول المدرسية الذكية &copy; 2026
+    </footer>
+
+    <script>
+        let settings = JSON.parse(localStorage.getItem('sch_settings')) || { name: '' };
+        document.getElementById('schoolNameHeader').innerText = settings.name || '';
+
+        // أيام الأسبوع الثابتة
+        const daysOfWeek = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
+        const periodsCount = 7; // عدد الحصص اليومية
+
+        function generateSchedules() {
+            let distributions = JSON.parse(localStorage.getItem('sch_distributions')) || [];
+            let container = document.getElementById('schedulesOutputContainer');
+
+            if (distributions.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 bg-rose-500/20 rounded-2xl border border-rose-500/30 text-rose-200">لا توجد إسنادات مسجلة! يرجى إدخال إسنادات المدرسين أولاً من صفحة توزيع الحصص.</div>`;
+                return;
+            }
+
+            // تجميع الشعب الفرعية لكل صف وإيجاد كافة الشعب المطلوبة
+            let sectionSchedules = {}; // المفتاح: "الصف - الشعبة"
+
+            distributions.forEach(item => {
+                let className = item.className;
+                let sections = item.sections || [item.section];
+
+                sections.forEach(sec => {
+                    let key = `${className} - شعبة ${sec}`;
+                    if (!sectionSchedules[key]) {
+                        sectionSchedules[key] = {
+                            className: className,
+                            section: sec,
+                            grid: {} // الأيام والحصص
+                        };
+                        daysOfWeek.forEach(day => {
+                            sectionSchedules[key].grid[day] = Array(periodsCount).fill('فراغ');
+                        });
+                    }
+                });
+            });
+
+            // خوارزمية التوزيع الذكي للحصص لكل شعبة
+            distributions.forEach(item => {
+                let sections = item.sections || [item.section];
+                let subject = item.subject;
+                let teacher = item.teacher;
+                let weeklyCount = parseInt(item.lessonsCount) || 4;
+                let allowedDays = item.days || daysOfWeek;
+                let excludedLessons = item.excludedLessons || [];
+
+                sections.forEach(sec => {
+                    let key = `${item.className} - شعبة ${sec}`;
+                    if (!sectionSchedules[key]) return;
+
+                    let placedCount = 0;
+                    // محاولة توزيع الحصص حسب الأيام المتاحة
+                    for (let d = 0; d < allowedDays.length && placedCount < weeklyCount; d++) {
+                        let day = allowedDays[d];
+                        for (let p = 0; p < periodsCount && placedCount < weeklyCount; p++) {
+                            let periodName = `الدرس ${p + 1}`;
+                            // التحقق من أن الحصة غير مستثناة وأن المكان فارغ
+                            if (!excludedLessons.includes(periodName) && sectionSchedules[key].grid[day][p] === 'فراغ') {
+                                sectionSchedules[key].grid[day][p] = `${subject}<br><span class="text-xs opacity-75">(${teacher})</span>`;
+                                placedCount++;
+                            }
+                        }
+                    }
+                });
+            });
+
+            // رسم الجداول للشعب في الواجهة
+            container.innerHTML = '';
+            let keys = Object.keys(sectionSchedules);
+
+            if (keys.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 bg-white/5 rounded-2xl border border-white/10">لا توجد بيانات كافية لتوليد الجداول.</div>`;
+                return;
+            }
+
+            keys.forEach(key => {
+                let schData = sectionSchedules[key];
+                let tableHtml = `
+                    <div class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
+                        <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-300">📅 جدول حصص: ${key}</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-center border-collapse text-sm border border-white/20">
+                               <thead>
+                                    <tr class="bg-black/30 border-b border-white/20">
+                                        <th class="py-3 px-3 border border-white/20 font-bold">اليوم / الحصة</th>
+                `;
+                for (let i = 1; i <= periodsCount; i++) {
+                    tableHtml += `<th class="py-3 px-2 border border-white/20">الدرس ${i}</th>`;
+                }
+                tableHtml += `</tr></thead><tbody>`;
+
+                daysOfWeek.forEach(day => {
+                    tableHtml += `<tr class="border-b border-white/10 hover:bg-white/5"><td class="py-3 px-3 border border-white/20 font-bold bg-black/20">${day}</td>`;
+                    for (let p = 0; p < periodsCount; p++) {
+                        let cellContent = schData.grid[day][p];
+                        let bgClass = cellContent === 'فراغ' ? 'opacity-40' : 'font-semibold bg-white/10';
+                        tableHtml += `<td class="py-3 px-2 border border-white/20 ${bgClass}">${cellContent}</td>`;
+                    }
+                    tableHtml += `</tr>`;
+                });
+
+                tableHtml += `</tbody></table></div></div>`;
+                container.innerHTML += tableHtml;
+            });
+        }
+
+        // توليد الجداول تلقائياً عند فتح الصفحة إن وجدت البيانات
+        window.onload = function() {
+            generateSchedules();
+        };
+    </script>
+</body>
+</html>
