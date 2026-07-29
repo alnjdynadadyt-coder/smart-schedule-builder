@@ -88,7 +88,7 @@
                     </div>
                 </div>
 
-                <!-- الحصص المستثناة (تحديد الدروس 1 إلى 7 بنظام مربعات اختيار منظمة) -->
+                <!-- الحصص المستثناة (تحديد الدروس 1 إلى 7) -->
                 <div class="border-t border-white/20 pt-4 mt-4">
                     <h3 class="text-sm font-bold mb-3 text-amber-300">🚫 الحصص المستثناة أو المحظورة (اختيار الدروس التي لا يمكن التدريس فيها):</h3>
                     <div class="grid grid-cols-4 md:grid-cols-7 gap-2 text-sm text-center">
@@ -171,6 +171,7 @@
         document.getElementById('schoolNameHeader').innerText = settings.name || '';
 
         function populateDropdowns() {
+            // جلب المدرسين بالأسماء الصحيحة المخزنة في localStorage
             let teachers = JSON.parse(localStorage.getItem('sch_teachers')) || [];
             let subjects = JSON.parse(localStorage.getItem('sch_subjects')) || [];
             let classes = JSON.parse(localStorage.getItem('sch_classes')) || [];
@@ -181,10 +182,31 @@
             let cSelect = document.getElementById('selectClass');
             let secSelect = document.getElementById('selectSection');
 
-            teachers.forEach(t => tSelect.innerHTML += `<option value="${t.name}">${t.name} (${t.code})</option>`);
-            subjects.forEach(s => sSelect.innerHTML += `<option value="${s.name}">${s.name}</option>`);
-            classes.forEach(c => cSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`);
-            sections.forEach(sec => secSelect.innerHTML += `<option value="${sec.name}">شعبة ${sec.name}</option>`);
+            tSelect.innerHTML = '<option value="">-- اختر المدرس --</option>';
+            teachers.forEach(t => {
+                let tName = typeof t === 'object' ? (t.name || t.teacherName || '') : t;
+                if(tName) {
+                    tSelect.innerHTML += `<option value="${tName}">${tName}</option>`;
+                }
+            });
+
+            sSelect.innerHTML = '<option value="">-- اختر المادة --</option>';
+            subjects.forEach(s => {
+                let sName = typeof s === 'object' ? (s.name || '') : s;
+                if(sName) sSelect.innerHTML += `<option value="${sName}">${sName}</option>`;
+            });
+
+            cSelect.innerHTML = '<option value="">-- اختر الصف --</option>';
+            classes.forEach(c => {
+                let cName = typeof c === 'object' ? (c.name || '') : c;
+                if(cName) cSelect.innerHTML += `<option value="${cName}">${cName}</option>`;
+            });
+
+            secSelect.innerHTML = '<option value="">-- اختر الشعبة --</option>';
+            sections.forEach(sec => {
+                let secName = typeof sec === 'object' ? (sec.name || '') : sec;
+                if(secName) secSelect.innerHTML += `<option value="${secName}">شعبة ${secName}</option>`;
+            });
         }
         populateDropdowns();
 
@@ -192,10 +214,6 @@
 
         function applyPageTheme(themeClass) {
             let body = document.getElementById('pageBody');
-            let card1 = document.getElementById('cardContainer');
-            let card2 = document.getElementById('tableContainer');
-            let footer = document.getElementById('mainFooter');
-            
             body.className = `${themeClass} text-white min-h-screen flex flex-col justify-between transition-colors duration-300`;
         }
 
@@ -232,7 +250,7 @@
                     <td class="py-3 px-3">${item.className} - شعبة ${item.section}</td>
                     <td class="py-3 px-3 text-xs opacity-90">
                         <b>الأيام:</b> ${item.days.join(', ')}<br>
-                        <b class="text-rose-300">الحصص المستثناة:</b> ${item.excludedLessons.length > 0 ? item.excludedLessons.join(', ') : 'لا يوجد'}
+                        <b class="text-rose-300">الحصص المستثناة:</b> ${item.excludedLessons && item.excludedLessons.length > 0 ? item.excludedLessons.join(', ') : 'لا يوجد'}
                     </td>
                     <td class="py-3 px-3 text-center space-x-2 space-x-reverse">
                         <button onclick="editDistribution(${index})" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg text-xs transition cursor-pointer">✏️ تعديل</button>
