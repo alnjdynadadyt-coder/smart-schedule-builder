@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة توزيع الحصص والصلاحيات - منظومة بناء الجداول</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body id="pageBody" class="bg-indigo-900 text-white min-h-screen flex flex-col justify-between transition-colors duration-300">
+
+    <!-- Header -->
+    <header class="bg-black/20 backdrop-blur-md shadow-sm py-5 border-b border-white/10">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg text-sm transition flex items-center gap-1">
+                    ⬅️ القائمة الرئيسية
+                </a>
+                <h1 class="text-xl font-bold">📋 توزيع الحصص وصلاحيات المدرسين</h1>
+            </div>
+            <span id="schoolNameHeader" class="text-sm font-semibold opacity-90"></span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-4xl flex-grow">
+        
+        <!-- نموذج التوزيع والصلاحيات -->
+        <div id="cardContainer" class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
+            <h2 id="formTitle" class="text-lg font-bold mb-4 border-b pb-2 border-white/25">إسناد مادة وصلاحيات جديدة للمدرس</h2>
+            
+            <form id="distributionForm" onsubmit="saveDistribution(event)" class="space-y-5">
+                <input type="hidden" id="editIndex" value="-1">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- اختيار المدرس -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">👨‍🏫 اختر المدرس:</label>
+                        <select id="selectTeacher" required class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">-- اختر المدرس --</option>
+                        </select>
+                    </div>
+
+                    <!-- اختيار المادة -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">📖 اختر المادة:</label>
+                        <select id="selectSubject" required class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">-- اختر المادة --</option>
+                        </select>
+                    </div>
+
+                    <!-- اختيار الصف -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">🏫 اختر الصف:</label>
+                        <select id="selectClass" required class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">-- اختر الصف --</option>
+                        </select>
+                    </div>
+
+                    <!-- اختيار الشعبة -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">👥 اختر الشعبة:</label>
+                        <select id="selectSection" required class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">-- اختر الشعبة --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- قسم الصلاحيات والأيام -->
+                <div class="border-t border-white/20 pt-4 mt-4">
+                    <h3 class="text-sm font-bold mb-3 text-amber-300">⚙️ صلاحيات أيام الدوام (أيام عدم الممانعة أو الحظر):</h3>
+                    <div id="daysCheckboxes" class="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
+                        <label class="flex items-center gap-2 cursor-pointer bg-black/20 p-2.5 rounded-xl"><input type="checkbox" name="workDays" value="السبت" checked class="w-4 h-4 rounded"> السبت</label>
+                        <label class="flex items-center gap-2 cursor-pointer bg-black/20 p-2.5 rounded-xl"><input type="checkbox" name="workDays" value="الأحد" checked class="w-4 h-4 rounded"> الأحد</label>
+                        <label class="flex items-center gap-2 cursor-pointer bg-black/20 p-2.5 rounded-xl"><input type="checkbox" name="workDays" value="الإثنين" checked class="w-4 h-4 rounded"> الإثنين</label>
+                        <label class="flex items-center gap-2 cursor-pointer bg-black/20 p-2.5 rounded-xl"><input type="checkbox" name="workDays" value="الثلاثاء" checked class="w-4 h-4 rounded"> الثلاثاء</label>
+                        <label class="flex items-center gap-2 cursor-pointer bg-black/20 p-2.5 rounded-xl"><input type="checkbox" name="workDays" value="الأربعاء" checked class="w-4 h-4 rounded"> الأربعاء</label>
+                    </div>
+                </div>
+
+                <!-- ملاحظات أو الحصص المستثناة -->
+                <div>
+                    <label class="block text-sm font-semibold mb-2">📌 ملاحظات أو حصص مستثناة (اختياري):</label>
+                    <input type="text" id="teacherNotes" class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="مثال: لا يدرس الدرس الأول يوم الأحد">
+                </div>
+
+                <!-- اختيار لون ثيم هذه الصفحة -->
+                <div>
+                    <label class="block text-sm font-semibold mb-2">🎨 لون ثيم هذه الصفحة:</label>
+                    <select id="pageThemeSelect" onchange="changePageTheme(this.value)" class="w-full px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="bg-indigo-900">نيللي غامق (افتراضي)</option>
+                        <option value="bg-slate-900">الداكن الليلي</option>
+                        <option value="bg-emerald-900">زمردي غامق</option>
+                        <option value="bg-purple-900">أرجواني داكن</option>
+                        <option value="bg-blue-600">أزرق حالم</option>
+                        <option value="bg-teal-800">تيل مميز</option>
+                        <option value="bg-rose-900">وردي داكن</option>
+                        <option value="bg-slate-100 text-gray-900">رمادي فاتح نظيف</option>
+                        <option value="bg-amber-50 text-gray-900">أصفر ذهبي ناعم</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" id="submitBtn" class="flex-grow bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg transition cursor-pointer">
+                        ➕ إضافة الإسناد والصلاحيات
+                    </button>
+                    <button type="button" onclick="resetForm()" class="bg-gray-600 hover:bg-gray-500 text-white font-bold px-5 py-3 rounded-xl shadow-lg transition cursor-pointer">
+                        إلغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- جدول عرض التوزيعات -->
+        <div id="tableContainer" class="p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2 border-white/25">قائمة توزيع الحصص والصلاحيات المسجلة</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-white/20 opacity-90">
+                            <th class="py-2 px-3">المدرس</th>
+                            <th class="py-2 px-3">المادة</th>
+                            <th class="py-2 px-3">الصف والشعبة</th>
+                            <th class="py-2 px-3">الأيام المستثناة / المتاحة</th>
+                            <th class="py-2 px-3 text-center">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="distributionTableBody">
+                        <!-- تضاف البيانات هنا ديناميكياً -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="emptyMessage" class="text-center py-6 text-sm opacity-75 hidden">
+                لا توجد توزيعات مسجلة حتى الآن. ابدأ بإسناد الحصص!
+            </div>
+        </div>
+
+        <!-- أزرار الحفظ والحذف العامة أسفل الصفحة -->
+        <div class="flex gap-4">
+            <button onclick="saveAllChanges()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition cursor-pointer flex items-center justify-center gap-2">
+                💾 حفظ الإعدادات
+            </button>
+            <button onclick="deleteAllDistributions()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition cursor-pointer flex items-center justify-center gap-2">
+                🗑️ حذف الكل
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="mainFooter" class="bg-slate-800 text-slate-300 border-t border-white/10 py-4 text-center text-sm transition-colors duration-300">
+        منظومة بناء الجداول المدرسية الذكية &copy; 2026
+    </footer>
+
+    <script>
+        // استرجاع اسم المدرسة
+        let settings = JSON.parse(localStorage.getItem('sch_settings')) || { name: '' };
+        document.getElementById('schoolNameHeader').innerText = settings.name || '';
+
+        // تعبئة القوائم المنسدلة من الصفحات الأخرى
+        function populateDropdowns() {
+            let teachers = JSON.parse(localStorage.getItem('sch_teachers')) || [];
+            let subjects = JSON.parse(localStorage.getItem('sch_subjects')) || [];
+            let classes = JSON.parse(localStorage.getItem('sch_classes')) || [];
+            let sections = JSON.parse(localStorage.getItem('sch_sections')) || [];
+
+            let tSelect = document.getElementById('selectTeacher');
+            let sSelect = document.getElementById('selectSubject');
+            let cSelect = document.getElementById('selectClass');
+            let secSelect = document.getElementById('selectSection');
+
+            teachers.forEach(t => tSelect.innerHTML += `<option value="${t.name}">${t.name} (${t.code})</option>`);
+            subjects.forEach(s => sSelect.innerHTML += `<option value="${s.name}">${s.name}</option>`);
+            classes.forEach(c => cSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`);
+            sections.forEach(sec => secSelect.innerHTML += `<option value="${sec.name}">شعبة ${sec.name}</option>`);
+        }
+        populateDropdowns();
+
+        // الثيمات
+        let pageSettings = JSON.parse(localStorage.getItem('distribution_page_settings')) || { theme: 'bg-indigo-900' };
+
+        function applyPageTheme(themeClass) {
+            let body = document.getElementById('pageBody');
+            let card1 = document.getElementById('cardContainer');
+            let card2 = document.getElementById('tableContainer');
+            let footer = document.getElementById('mainFooter');
+            let selectBox = document.getElementById('pageThemeSelect');
+            
+            body.className = `${themeClass} min-h-screen flex flex-col justify-between transition-colors duration-300`;
+            
+            let isLight = themeClass.includes('slate-100') || themeClass.includes('amber-50');
+            if (isLight) {
+                body.className += " text-gray-900";
+                let cardStyle = "p-6 rounded-2xl shadow-xl border bg-white/90 border-gray-300 text-gray-900 backdrop-blur-md mb-8";
+                card1.className = cardStyle; card2.className = cardStyle;
+                footer.className = "bg-gray-200 text-gray-700 border-t border-gray-300 py-4 text-center text-sm transition-colors duration-300";
+                selectBox.className = "w-full px-4 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500";
+            } else {
+                body.className += " text-white";
+                let cardStyle = "p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8";
+                card1.className = cardStyle; card2.className = cardStyle;
+                footer.className = "bg-black/30 text-slate-300 border-t border-white/10 py-4 text-center text-sm transition-colors duration-300";
+                selectBox.className = "w-full px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/20 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50";
+            }
+        }
+
+        function changePageTheme(colorClass) {
+            pageSettings.theme = colorClass;
+            localStorage.setItem('distribution_page_settings', JSON.stringify(pageSettings));
+            applyPageTheme(colorClass);
+        }
+
+        if (pageSettings.theme) {
+            document.getElementById('pageThemeSelect').value = pageSettings.theme;
+            applyPageTheme(pageSettings.theme);
+        }
+
+        // إدارة التوزيعات
+        let distributions = JSON.parse(localStorage.getItem('sch_distributions')) || [];
+
+        function renderDistributions() {
+            let tbody = document.getElementById('distributionTableBody');
+            let emptyMsg = document.getElementById('emptyMessage');
+            tbody.innerHTML = '';
+
+            if (distributions.length === 0) {
+                emptyMsg.style.display = 'block';
+                return;
+            }
+            emptyMsg.style.display = 'none';
+
+            distributions.forEach((item, index) => {
+                let tr = document.createElement('tr');
+                tr.className = "border-b border-white/10 hover:bg-white/5 transition";
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-semibold">${item.teacher}</td>
+                    <td class="py-3 px-3">${item.subject}</td>
+                    <td class="py-3 px-3">${item.className} - شعبة ${item.section}</td>
+                    <td class="py-3 px-3 text-xs opacity-90">${item.days.join(', ')} <br> <span class="text-amber-300">${item.notes || ''}</span></td>
+                    <td class="py-3 px-3 text-center space-x-2 space-x-reverse">
+                        <button onclick="editDistribution(${index})" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg text-xs transition cursor-pointer">✏️ تعديل</button>
+                        <button onclick="deleteDistribution(${index})" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg text-xs transition cursor-pointer">🗑️ حذف</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function saveDistribution(event) {
+            event.preventDefault();
+            let teacher = document.getElementById('selectTeacher').value;
+            let subject = document.getElementById('selectSubject').value;
+            let className = document.getElementById('selectClass').value;
+            let section = document.getElementById('selectSection').value;
+            let notes = document.getElementById('teacherNotes').value.trim();
+            
+            let days = [];
+            document.querySelectorAll('input[name="workDays"]:checked').forEach(cb => days.push(cb.value));
+
+            let editIndex = parseInt(document.getElementById('editIndex').value);
+
+            let dataObj = { teacher, subject, className, section, days, notes };
+
+            if (editIndex === -1) {
+                distributions.push(dataObj);
+            } else {
+                distributions[editIndex] = dataObj;
+            }
+
+            localStorage.setItem('sch_distributions', JSON.stringify(distributions));
+            resetForm();
+            renderDistributions();
+        }
+
+        function editDistribution(index) {
+            let item = distributions[index];
+            document.getElementById('selectTeacher').value = item.teacher;
+            document.getElementById('selectSubject').value = item.subject;
+            document.getElementById('selectClass').value = item.className;
+            document.getElementById('selectSection').value = item.section;
+            document.getElementById('teacherNotes').value = item.notes || '';
+            
+            document.querySelectorAll('input[name="workDays"]').forEach(cb => {
+                cb.checked = item.days.includes(cb.value);
+            });
+
+            document.getElementById('editIndex').value = index;
+            document.getElementById('formTitle').innerText = 'تعديل الإسناد والصلاحيات';
+            document.getElementById('submitBtn').innerText = '💾 حفظ التعديلات';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteDistribution(index) {
+            if (confirm('هل أنت متأكد من حذف هذا التوزيع؟')) {
+                distributions.splice(index, 1);
+                localStorage.setItem('sch_distributions', JSON.stringify(distributions));
+                renderDistributions();
+            }
+        }
+
+        function saveAllChanges() {
+            localStorage.setItem('sch_distributions', JSON.stringify(distributions));
+            alert('تم حفظ إعدادات توزيع الحصص بنجاح!');
+        }
+
+        function deleteAllDistributions() {
+            if (confirm('هل أنت متأكد من حذف جميع توزيعات الحصص؟')) {
+                distributions = [];
+                localStorage.removeItem('sch_distributions');
+                renderDistributions();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('distributionForm').reset();
+            document.getElementById('editIndex').value = -1;
+            document.getElementById('formTitle').innerText = 'إسناد مادة وصلاحيات جديدة للمدرس';
+            document.getElementById('submitBtn').innerText = '➕ إضافة الإسناد والصلاحيات';
+            document.querySelectorAll('input[name="workDays"]').forEach(cb => cb.checked = true);
+        }
+
+        renderDistributions();
+    </script>
+</body>
+</html>
