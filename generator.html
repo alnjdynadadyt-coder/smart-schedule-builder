@@ -6,20 +6,28 @@
     <title>توليد وعرض الجداول المدرسية - منظومة بناء الجداول</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&family=Tajawal:wght@400;700&family=Readex+Pro:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&family=Tajawal:wght@400;700&family=Readex+Pro:wght@400;600&family=Changa:wght@400;600&family=El+Messiri:wght@400;700&display=swap');
         
-        body { font-family: 'Cairo', sans-serif; background-color: #311b92; color: #ffffff; }
+        body { font-family: 'Cairo', sans-serif; background-color: #311b92; color: #ffffff; direction: rtl; text-align: right; }
 
-        /* تخصيص الخطوط بناءً على إعدادات لوحة التحكم */
-        .custom-cell-text { font-family: var(--cell-font, 'Cairo'); }
-        .custom-sub-text { font-family: var(--sub-font, 'Cairo'); }
+        .custom-subject-style {
+            font-family: var(--sub-font, 'Cairo');
+            font-size: var(--sub-size, 16px);
+            color: var(--sub-color, #fde047);
+        }
+
+        .custom-teacher-style {
+            font-family: var(--tch-font, 'Cairo');
+            font-size: var(--tch-size, 14px);
+            color: var(--tch-color, #ffffff);
+        }
 
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
             .print-container { background: white !important; color: black !important; border: 1px solid #000 !important; box-shadow: none !important; }
-            table { border-collapse: collapse !important; width: 100% !important; }
-            th, td { border: 1px solid #000 !important; color: #000 !important; background-color: #fff !important; }
+            table { border-collapse: collapse !important; width: 100% !important; direction: rtl !important; }
+            th, td { border: 1px solid #000 !important; color: #000 !important; background-color: #fff !important; text-align: center !important; }
             .print-dark-text { color: #000 !important; }
         }
     </style>
@@ -47,14 +55,14 @@
             <div class="flex flex-wrap gap-4 justify-between items-center">
                 <div>
                     <h2 class="text-lg font-bold mb-1">⚙️ محرك بناء الجداول الذكي ولوحة التنسيق</h2>
-                    <p class="text-sm opacity-85">تحكم بطرق العرض، تخصيص الخطوط، والتصدير الاحترافي.</p>
+                    <p class="text-sm opacity-85">تحكم بطرق العرض، تخصيص الخطوط بدقة، والتصدير الاحترافي.</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <button onclick="exportToExcel()" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
                         📊 تصدير Excel (RTL)
                     </button>
                     <button onclick="exportToWord()" class="bg-blue-700 hover:bg-blue-600 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
-                        📝 تصدير Word منظم
+                        📝 تصدير Word منظم (RTL)
                     </button>
                     <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
                         🖨️ طباعة / PDF
@@ -75,7 +83,7 @@
                 </button>
             </div>
 
-            <!-- لوحة تحكم تخصيص الخطوط والألوان -->
+            <!-- لوحة تحكم تخصيص الخطوط والأحجام بدقة (14 إلى 23) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-black/20 p-4 rounded-xl border border-white/10">
                 <div>
                     <label class="block text-xs font-bold mb-1 opacity-90">نوع خط المادة:</label>
@@ -84,16 +92,24 @@
                         <option value="'Tajawal', sans-serif">تجوال (Tajawal)</option>
                         <option value="'Amiri', serif">أميري (Amiri)</option>
                         <option value="'Readex Pro', sans-serif">ريادكس (Readex Pro)</option>
+                        <option value="'Changa', sans-serif">شنطة (Changa)</option>
+                        <option value="'El Messiri', sans-serif">المسيري (El Messiri)</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-bold mb-1 opacity-90">حجم ولون خط المادة:</label>
                     <div class="flex gap-2">
                         <select id="fontSizeSubject" onchange="applyStylingPreferences()" class="w-1/2 bg-slate-800 text-white text-xs p-2 rounded-lg border border-white/20">
-                            <option value="text-xs">صغير جداً</option>
-                            <option value="text-sm">صغير</option>
-                            <option value="text-base" selected>متوسط</option>
-                            <option value="text-lg">كبير</option>
+                            <option value="14px">14</option>
+                            <option value="15px">15</option>
+                            <option value="16px" selected>16</option>
+                            <option value="17px">17</option>
+                            <option value="18px">18</option>
+                            <option value="19px">19</option>
+                            <option value="20px">20</option>
+                            <option value="21px">21</option>
+                            <option value="22px">22</option>
+                            <option value="23px">23</option>
                         </select>
                         <input type="color" id="fontColorSubject" value="#fde047" onchange="applyStylingPreferences()" class="w-1/2 h-9 bg-transparent cursor-pointer rounded-lg border border-white/20 p-1">
                     </div>
@@ -105,15 +121,24 @@
                         <option value="'Tajawal', sans-serif">تجوال (Tajawal)</option>
                         <option value="'Amiri', serif">أميري (Amiri)</option>
                         <option value="'Readex Pro', sans-serif">ريادكس (Readex Pro)</option>
+                        <option value="'Changa', sans-serif">شنطة (Changa)</option>
+                        <option value="'El Messiri', sans-serif">المسيري (El Messiri)</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-bold mb-1 opacity-90">حجم ولون خط المدرس:</label>
                     <div class="flex gap-2">
                         <select id="fontSizeTeacher" onchange="applyStylingPreferences()" class="w-1/2 bg-slate-800 text-white text-xs p-2 rounded-lg border border-white/20">
-                            <option value="text-[10px]" selected>صغير جداً</option>
-                            <option value="text-xs">صغير</option>
-                            <option value="text-sm">متوسط</option>
+                            <option value="14px" selected>14</option>
+                            <option value="15px">15</option>
+                            <option value="16px">16</option>
+                            <option value="17px">17</option>
+                            <option value="18px">18</option>
+                            <option value="19px">19</option>
+                            <option value="20px">20</option>
+                            <option value="21px">21</option>
+                            <option value="22px">22</option>
+                            <option value="23px">23</option>
                         </select>
                         <input type="color" id="fontColorTeacher" value="#ffffff" onchange="applyStylingPreferences()" class="w-1/2 h-9 bg-transparent cursor-pointer rounded-lg border border-white/20 p-1">
                     </div>
@@ -122,7 +147,7 @@
         </div>
 
         <!-- منطقة عرض الجداول -->
-        <div id="schedulesOutputContainer" class="space-y-8"></div>
+        <div id="schedulesOutputContainer" class="space-y-8" dir="rtl"></div>
 
     </main>
 
@@ -153,8 +178,9 @@
             let teachers = JSON.parse(localStorage.getItem('sch_teachers')) || [];
             let subjects = JSON.parse(localStorage.getItem('sch_subjects')) || [];
             let tMap = {}, sMap = {};
-            teachers.forEach(t => tMap[t.name] = t.shortName || t.name);
-            subjects.forEach(s => sMap[s.name] = s.shortName || s.name);
+            // الاعتماد الحصري والصارم على الاختصار فقط لتصغير حجم الجدول
+            teachers.forEach(t => tMap[t.name] = (t.shortName && t.shortName.trim() !== '') ? t.shortName : t.name);
+            subjects.forEach(s => sMap[s.name] = (s.shortName && s.shortName.trim() !== '') ? s.shortName : s.name);
             return { tMap, sMap };
         }
 
@@ -185,7 +211,6 @@
                 });
             });
 
-            // خوارزمية ذكية متقدمة لتوزيع الحصص ومنع التراكم في دروس متتالية
             distributions.forEach(item => {
                 let sections = item.sections || [item.section];
                 let subjectFull = item.subject;
@@ -202,11 +227,9 @@
 
                     let placed = 0;
                     let pass = 0;
-                    // التوزيع على أيام مختلفة وتجنب الحصص المتجاورة لنفس المادة
                     while (placed < weeklyCount && pass < 10) {
                         for (let d = 0; d < allowedDays.length && placed < weeklyCount; d++) {
                             let day = allowedDays[d];
-                            // ترتيب الحصص بمرونة (مثلاً 2، 3، 5، 1، 4، 6، 7) لضمان عدم حصر المادة في درسين متتاليين
                             let periodIndices = [1, 2, 4, 0, 3, 5, 6]; 
                             for (let i = 0; i < periodIndices.length && placed < weeklyCount; i++) {
                                 let p = periodIndices[i];
@@ -215,7 +238,7 @@
                                 if (!excludedLessons.includes(periodName) && sectionSchedules[key][day][p] === null) {
                                     if (pass === 0) {
                                         let dayHasSubject = sectionSchedules[key][day].some(cell => cell && cell.subject === subShort);
-                                        if (dayHasSubject) continue; // تفادي تكرار المادة في نفس اليوم بالمحاولة الأولى
+                                        if (dayHasSubject) continue;
                                     }
                                     
                                     sectionSchedules[key][day][p] = {
@@ -265,17 +288,13 @@
             let sTch = document.getElementById('fontSizeTeacher').value;
             let cTch = document.getElementById('fontColorTeacher').value;
 
-            document.querySelectorAll('.sched-subject').forEach(el => {
-                el.style.fontFamily = fSub;
-                el.className = `sched-subject font-bold ${sSub}`;
-                el.style.color = cSub;
-            });
+            document.documentElement.style.setProperty('--sub-font', fSub);
+            document.documentElement.style.setProperty('--sub-size', sSub);
+            document.documentElement.style.setProperty('--sub-color', cSub);
 
-            document.querySelectorAll('.sched-teacher').forEach(el => {
-                el.style.fontFamily = fTch;
-                el.className = `sched-teacher ${sTch} opacity-90`;
-                el.style.color = cTch;
-            });
+            document.documentElement.style.setProperty('--tch-font', fTch);
+            document.documentElement.style.setProperty('--tch-size', sTch);
+            document.documentElement.style.setProperty('--tch-color', cTch);
         }
 
         function renderCurrentView() {
@@ -291,7 +310,7 @@
                         <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
                             <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-300 print-dark-text">📅 جدول حصص: ${key}</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-center border-collapse text-sm border border-white/30">
+                                <table class="w-full text-center border-collapse text-sm border border-white/30" dir="rtl">
                                     <thead>
                                         <tr class="bg-black/40 border-b border-white/30 text-white font-bold print-dark-text">
                                             <th class="py-3 px-3 border border-white/30">اليوم / الحصة</th>`;
@@ -304,8 +323,7 @@
                         html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20 text-white print-dark-text">${day}</td>`;
                         for (let p = 0; p < periodsCount; p++) {
                             let cell = schData[day][p];
-                            // بدون كتابة كلمة "فراغ" في الحقول الفارغة تماماً
-                            let content = cell ? `<span class="sched-subject font-bold text-amber-200">${cell.subject}</span><br><span class="sched-teacher text-xs text-white">(${cell.teacher})</span>` : ``;
+                            let content = cell ? `<div style="line-height: 1.4;"><span class="custom-subject-style font-bold">${cell.subject}</span><br><span class="custom-teacher-style">(${cell.teacher})</span></div>` : ``;
                             html += `<td class="py-3 px-2 border border-white/30 h-16 align-middle">${content}</td>`;
                         }
                         html += `</tr>`;
@@ -321,7 +339,7 @@
                         <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
                             <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-300 print-dark-text">📅 جدول يوم: ${day} (كافة الشعب)</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-center border-collapse text-sm border border-white/30">
+                                <table class="w-full text-center border-collapse text-sm border border-white/30" dir="rtl">
                                     <thead>
                                         <tr class="bg-black/40 border-b border-white/30 text-white font-bold print-dark-text">
                                             <th class="py-3 px-3 border border-white/30">الصف والشعبة</th>`;
@@ -334,7 +352,7 @@
                         html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20 text-white print-dark-text">${secKey}</td>`;
                         for (let p = 0; p < periodsCount; p++) {
                             let cell = globalMasterSchedule.sectionSchedules[secKey][day][p];
-                            let content = cell ? `<span class="sched-subject font-bold text-amber-200">${cell.subject}</span><br><span class="sched-teacher text-xs text-white">(${cell.teacher})</span>` : ``;
+                            let content = cell ? `<div style="line-height: 1.4;"><span class="custom-subject-style font-bold">${cell.subject}</span><br><span class="custom-teacher-style">(${cell.teacher})</span></div>` : ``;
                             html += `<td class="py-3 px-2 border border-white/30 h-16 align-middle">${content}</td>`;
                         }
                         html += `</tr>`;
@@ -356,7 +374,7 @@
                         <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 text-white backdrop-blur-md mb-8">
                             <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-300 print-dark-text">👨‍🏫 جدول حصص المدرس: ${tch}</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-center border-collapse text-sm border border-white/30">
+                                <table class="w-full text-center border-collapse text-sm border border-white/30" dir="rtl">
                                     <thead>
                                         <tr class="bg-black/40 border-b border-white/30 text-white font-bold print-dark-text">
                                             <th class="py-3 px-3 border border-white/30">اليوم / الحصة</th>`;
@@ -369,7 +387,7 @@
                         html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20 text-white print-dark-text">${day}</td>`;
                         for (let p = 0; p < periodsCount; p++) {
                             let cell = tchData[day][p];
-                            let content = cell ? `<span class="sched-subject font-bold text-amber-200">${cell.subject}</span><br><span class="sched-teacher text-xs text-white">(${cell.classInfo})</span>` : ``;
+                            let content = cell ? `<div style="line-height: 1.4;"><span class="custom-subject-style font-bold">${cell.subject}</span><br><span class="custom-teacher-style">(${cell.classInfo})</span></div>` : ``;
                             html += `<td class="py-3 px-2 border border-white/30 h-16 align-middle">${content}</td>`;
                         }
                         html += `</tr>`;
@@ -378,7 +396,6 @@
                     container.innerHTML += html;
                 });
             }
-            applyStylingPreferences();
         }
 
         function exportToExcel() {
@@ -402,13 +419,13 @@
             let wordWrapper = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
             <head><meta charset='utf-8'><title>School Schedules</title>
             <style>
-                body { direction: rtl; font-family: 'Cairo', Arial, sans-serif; }
-                table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
-                th, td { border: 1px solid windowtext; padding: 8px; text-align: center; font-size: 12pt; }
+                body { direction: rtl; text-align: right; font-family: 'Cairo', Arial, sans-serif; }
+                table { border-collapse: collapse; width: 100%; margin-bottom: 20px; direction: rtl; }
+                th, td { border: 1px solid windowtext; padding: 8px; text-align: center; font-size: 11pt; }
                 th { background-color: #f2f2f2; }
             </style>
             </head>
-            <body dir="rtl"><div>${htmlContent}</div></body></html>`;
+            <body dir="rtl"><div style="direction: rtl; text-align: right;">${htmlContent}</div></body></html>`;
 
             let blob = new Blob(['\ufeff' + wordWrapper], { type: 'application/msword;charset=utf-8;' });
             let url = URL.createObjectURL(blob);
