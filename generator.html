@@ -29,17 +29,30 @@
             color: var(--tch-color, #ffffff);
         }
 
-        /* تحسين وضوح خطوط الجداول بشكل قوي وواضح جداً */
-        table, th, td {
-            border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+        /* فرض خطوط واضحة وصريحة جداً لجميع الخلايا والجدول */
+        table.styled-table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+            border: 2.5px solid #1e293b !important;
+        }
+
+        table.styled-table th, 
+        table.styled-table td {
+            border: 2px solid #334155 !important;
+            padding: 10px 8px !important;
         }
 
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
             .print-container { background: white !important; color: black !important; border: 1px solid #000 !important; box-shadow: none !important; }
-            table { border-collapse: collapse !important; width: 100% !important; direction: rtl !important; }
-            th, td { border: 1.5px solid #000 !important; color: #000 !important; background-color: #fff !important; text-align: center !important; }
+            table.styled-table th, 
+            table.styled-table td { 
+                border: 2px solid #000 !important; 
+                color: #000 !important; 
+                background-color: #fff !important; 
+                text-align: center !important; 
+            }
         }
     </style>
 </head>
@@ -76,7 +89,7 @@
                         💾 حفظ مؤقت
                     </button>
                     <button onclick="clearTempSchedule()" class="bg-rose-700 hover:bg-rose-600 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
-                        🗑️ حذف الحفظ المؤقت
+                        🗑️ مسح وإعادة التوليد
                     </button>
                     <button onclick="exportToExcel()" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
                         📊 تصدير Excel (RTL)
@@ -230,7 +243,7 @@
                 let classShort = classMap[className] || className; 
                 let sections = item.sections || [item.section];
                 sections.forEach(sec => {
-                    // تعديل التسمية لتصبح بالشكل المطلوب: (الصف - الشعبة) بدون كلمة شعبة
+                    // تم اعتماد الصيغة الجديدة حصراً بدون كلمة شعبة (مثل: الأول - أ)
                     let key = `${classShort} - ${sec}`; 
                     if (!sectionSchedules[key]) {
                         sectionSchedules[key] = {};
@@ -339,8 +352,8 @@
 
         function clearTempSchedule() {
             localStorage.removeItem('sch_temp_complete_state');
-            alert('🗑️ تم حذف الحفظ المؤقت بنجاح!');
-            location.reload();
+            alert('🗑️ تم مسح الحفظ المؤقت وتوليد جدول حديث ونظيف!');
+            generateNewSchedule(false);
         }
 
         function applyStylingPreferences() {
@@ -395,9 +408,9 @@
                         <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 backdrop-blur-md mb-8">
                             <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-400">📅 جدول حصص: ${key}</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-center border-collapse text-sm" dir="rtl">
+                                <table class="styled-table w-full text-center text-sm" dir="rtl">
                                     <thead>
-                                        <tr class="bg-black/30 font-bold">
+                                        <tr class="bg-black/40 font-bold">
                                             <th class="py-3 px-3">اليوم / الحصة</th>`;
                     for (let i = 1; i <= periodsCount; i++) {
                         html += `<th class="py-3 px-2">الدرس ${i}</th>`;
@@ -424,9 +437,9 @@
                         <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 backdrop-blur-md mb-8">
                             <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-400">📅 جدول يوم: ${day} (كافة الشعب)</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-center border-collapse text-sm" dir="rtl">
+                                <table class="styled-table w-full text-center text-sm" dir="rtl">
                                     <thead>
-                                        <tr class="bg-black/30 font-bold">
+                                        <tr class="bg-black/40 font-bold">
                                             <th class="py-3 px-3">الصف والشعبة</th>`;
                     for (let i = 1; i <= periodsCount; i++) {
                         html += `<th class="py-3 px-2">الدرس ${i}</th>`;
@@ -459,9 +472,9 @@
                         <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 backdrop-blur-md mb-8">
                             <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-400">👨‍🏫 جدول حصص المدرس: ${tch}</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-center border-collapse text-sm" dir="rtl">
+                                <table class="styled-table w-full text-center text-sm" dir="rtl">
                                     <thead>
-                                        <tr class="bg-black/30 font-bold">
+                                        <tr class="bg-black/40 font-bold">
                                             <th class="py-3 px-3">اليوم / الحصة</th>`;
                     for (let i = 1; i <= periodsCount; i++) {
                         html += `<th class="py-3 px-2">الدرس ${i}</th>`;
@@ -505,9 +518,9 @@
             <head><meta charset='utf-8'><title>School Schedules</title>
             <style>
                 body { direction: rtl; text-align: right; font-family: 'Cairo', Arial, sans-serif; }
-                table { border-collapse: collapse; width: 100%; margin-bottom: 20px; direction: rtl; }
-                th, td { border: 1.5px solid windowtext; padding: 8px; text-align: center; font-size: 11pt; direction: rtl; }
-                th { background-color: #f2f2f2; }
+                table.styled-table { border-collapse: collapse; width: 100%; margin-bottom: 20px; direction: rtl; }
+                table.styled-table th, table.styled-table td { border: 2px solid windowtext; padding: 8px; text-align: center; font-size: 11pt; direction: rtl; }
+                table.styled-table th { background-color: #f2f2f2; }
             </style>
             </head>
             <body dir="rtl"><div style="direction: rtl; text-align: right; unicode-bidi: embed;">${htmlContent}</div></body></html>`;
@@ -523,7 +536,13 @@
         }
 
         window.onload = function() {
+            // محو الحفظ المؤقت القديم كلياً لإجبار النظام على استخدام الكود والشكل الجديد المحدث
             let savedState = localStorage.getItem('sch_temp_complete_state');
+            if (savedState && savedState.includes('شعبة')) {
+                localStorage.removeItem('sch_temp_complete_state');
+                savedState = null;
+            }
+
             if (savedState) {
                 let parsed = JSON.parse(savedState);
                 globalMasterSchedule = parsed.master;
