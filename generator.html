@@ -44,7 +44,7 @@
     <header class="bg-black/30 backdrop-blur-md shadow-sm py-4 border-b border-white/10 no-print">
         <div class="container mx-auto px-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <a href="index.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg text-sm transition flex items-center gap-1 shadow">
+                <a href="index.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg text-sm transition flex items-center gap-1">
                     ⬅️ القائمة الرئيسية
                 </a>
                 <h1 class="text-xl font-bold">📊 توليد وعرض الجداول المدرسية (aSc Engine)</h1>
@@ -179,6 +179,7 @@
             if (globalMasterSchedule) renderCurrentView();
         }
 
+        // دالة جلب الاختصارات المتوافقة تماماً مع حقول الـ code في (المدرسين، المواد، الصفوف)
         function loadShortcuts() {
             let teachers = JSON.parse(localStorage.getItem('sch_teachers')) || [];
             let subjects = JSON.parse(localStorage.getItem('sch_subjects')) || [];
@@ -188,19 +189,19 @@
             
             teachers.forEach(t => {
                 let name = typeof t === 'string' ? t : t.name;
-                let short = typeof t === 'object' && t.shortName ? t.shortName.trim() : '';
+                let short = typeof t === 'object' && t.code ? t.code.trim() : '';
                 tMap[name] = short !== '' ? short : name;
             });
 
             subjects.forEach(s => {
                 let name = typeof s === 'string' ? s : s.name;
-                let short = typeof s === 'object' && s.shortName ? s.shortName.trim() : '';
+                let short = typeof s === 'object' && s.code ? s.code.trim() : '';
                 sMap[name] = short !== '' ? short : name;
             });
 
             classesData.forEach(c => {
                 let name = typeof c === 'string' ? c : c.name;
-                let short = typeof c === 'object' && c.shortName ? c.shortName.trim() : '';
+                let short = typeof c === 'object' && c.code ? c.code.trim() : '';
                 classMap[name] = short !== '' ? short : name;
             });
 
@@ -222,7 +223,7 @@
 
             distributions.forEach(item => {
                 let className = item.className;
-                let classShort = classMap[className] || className; // تطبيق اختصار الصف بدقة
+                let classShort = classMap[className] || className; 
                 let sections = item.sections || [item.section];
                 sections.forEach(sec => {
                     let key = `${classShort} - شعبة ${sec}`; 
@@ -508,7 +509,7 @@
 
             let blob = new Blob(['\ufeff' + wordWrapper], { type: 'application/msword;charset=utf-8;' });
             let url = URL.createObjectURL(blob);
-            let a = url;
+            let a = document.createElement('a');
             a.href = url;
             a.download = 'School_Schedules.doc';
             document.body.appendChild(a);
