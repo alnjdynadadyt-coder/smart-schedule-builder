@@ -182,10 +182,15 @@
         function loadShortcuts() {
             let teachers = JSON.parse(localStorage.getItem('sch_teachers')) || [];
             let subjects = JSON.parse(localStorage.getItem('sch_subjects')) || [];
-            let tMap = {}, sMap = {};
+            let classesData = JSON.parse(localStorage.getItem('sch_classes')) || [];
+            
+            let tMap = {}, sMap = {}, classMap = {};
             teachers.forEach(t => tMap[t.name] = (t.shortName && t.shortName.trim() !== '') ? t.shortName : t.name);
             subjects.forEach(s => sMap[s.name] = (s.shortName && s.shortName.trim() !== '') ? s.shortName : s.name);
-            return { tMap, sMap };
+            classesData.forEach(c => {
+                if (c.name) classMap[c.name] = (c.shortName && c.shortName.trim() !== '') ? c.shortName : c.name;
+            });
+            return { tMap, sMap, classMap };
         }
 
         function generateNewSchedule(isNewAction = false) {
@@ -197,78 +202,63 @@
                 return;
             }
 
-            let { tMap, sMap } = loadShortcuts();
+            let { tMap, sMap, classMap } = loadShortcuts();
             let sectionSchedules = {}; 
             let teacherSchedules = {}; 
 
-                // نحتاج أيضاً لتحميل اختصارات الصفوف إذا كانت متوفرة، أو استخدام الاسم
-    let classesData = JSON.parse(localStorage.getItem('sch_classes')) || [];
-    let classMap = {};
-    classesData.forEach(c => {
-        if (c.name) classMap[c.name] = c.shortName || c.name;
-    });
-
-    distributions.forEach(item => {
-        let className = item.className;
-        let classShort = classMap[className] || className; // اختصار الصف
-        let sections = item.sections || [item.section];
-        sections.forEach(sec => {
-            let key = `${classShort} - شعبة ${sec}`; // استخدام اختصار الصف
-            if (!sectionSchedules[key]) {
-                sectionSchedules[key] = {};
-                daysOfWeek.forEach(day => {
-                    sectionSchedules[key][day] = Array(periodsCount).fill(null);
-                });
-            }
-        });
-    });
-
-    distributions.forEach(item => {
-        let sections = item.sections || [item.section];
-        let subjectFull = item.subject;
-        let teacherFull = item.teacher;
-        let subShort = sMap[subjectFull] || subjectFull;
-        let tchShort = tMap[teacherFull] || teacherFull;
-        let classShort = classMap[item.className] || item.className;
-        let weeklyCount = parseInt(item.lessonsCount) || 4;
-        let allowedDays = item.days && item.days.length > 0 ? item.days.filter(d => d !== 'السبت') : daysOfWeek;
-        let excludedLessons = item.excludedLessons || [];
-
-        sections.forEach(sec => {
-            let key = `${classShort} - شعبة ${sec}`; // استخدام اختصار الصف هنا أيضاً
-            if (!sectionSchedules[key]) return;
-
-            let placed = 0;
-            let pass = 0;
-            let shuffledDays = [...allowedDays].sort(() => Math.random() - 0.5);
-
-            while (placed < weeklyCount && pass < 10) {
-                for (let d = 0; d < shuffledDays.length && placed < weeklyCount; d++) {
-                    let day = shuffledDays[d];
-                    let periodIndices = [1, 2, 4, 0, 3, 5, 6].sort(() => Math.random() - 0.5); 
-                    for (let i = 0; i < periodIndices.length && placed < weeklyCount; i++) {
-                        let p = periodIndices[i];
-                        let periodName = `الدرس ${p + 1}`;
-                        
-                        if (!excludedLessons.includes(periodName) && sectionSchedules[key][day][p] === null) {
-                            if (pass === 0) {
-                                let dayHasSubject = sectionSchedules[key][day].some(cell => cell && cell.subject === subShort);
-                                if (dayHasSubject) continue;
-                            }
-                            
-                            sectionSchedules[key][day][p] = {
-                                subject: subShort,  // اختصار المادة
-                                teacher: tchShort,  // اختصار المدرس
-                                fullClassName: key
-                            };
-                            placed++;
-                        }
+            distributions.forEach(item => {
+                let className = item.className;
+                let classShort = classMap[className] || className; // اختصار الصف
+                let sections = item.sections || [item.section];
+                sections.forEach(sec => {
+                    let key = `${classShort} - شعبة ${sec}`; 
+                    if (!sectionSchedules[key]) {
+                        sectionSchedules[key] = {};
+                        daysOfWeek.forEach(day => {
+                            sectionSchedules[key][day] = Array(periodsCount).fill(null);
+                        });
                     }
-                }
-                pass++;
-            }
-        });
-    });
+                });
+            });
+
+            distributions.forEach(item => {
+                let sections = item.sections || [item.section];
+                let subjectFull = item.subject;
+                let teacherFull = item.teacher;
+                let subShort = sMap[subjectFull] || subjectFull;
+                let tchShort = tMap[teacherFull] || teacherFull;
+                let classShort = classMap[item.className] || item.className;
+                let weeklyCount = parseInt(item.lessonsCount) || 4;
+                let allowedDays = item.days && item.days.length > 0 ? item.days.filter(d => d !== 'السبت') : daysOfWeek;
+                let excludedLessons = item.excludedLessons || [];
+
+                sections.forEach(sec => {
+                    let key = `${classShort} - شعبة ${sec}`; 
+                    if (!sectionSchedules[key]) return;
+
+                    let placed = 0;
+                    let pass = 0;
+                    let shuffledDays = [...allowedDays].sort(() => Math.random() - 0.5);
+
+                    while (placed < weeklyCount && pass < 10) {
+                        for (let d = 0; d < shuffledDays.length && placed < weeklyCount; d++) {
+                            let day = shuffledDays[d];
+                            let periodIndices = [1, 2, 4, 0, 3, 5, 6].sort(() => Math.random() - 0.5); 
+                            for (let i = 0; i < periodIndices.length && placed < weeklyCount; i++) {
+                                let p = periodIndices[i];
+                                let periodName = `الدرس ${p + 1}`;
+                                
+                                if (!excludedLessons.includes(periodName) && sectionSchedules[key][day][p] === null) {
+                                    if (pass === 0) {
+                                        let dayHasSubject = sectionSchedules[key][day].some(cell => cell && cell.subject === subShort);
+                                        if (dayHasSubject) continue;
+                                    }
+                                    
+                                    sectionSchedules[key][day][p] = {
+                                        subject: subShort,  // اختصار المادة
+                                        teacher: tchShort,  // اختصار المدرس
+                                        fullClassName: key
+                                    };
                                     placed++;
                                 }
                             }
@@ -358,7 +348,6 @@
             document.documentElement.style.setProperty('--page-bg', themeColor);
             document.body.style.backgroundColor = themeColor;
 
-            // حساب السطوع تلقائياً للتحكم بلون الخط الرئيسي لتجنب اختفاء النصوص عند اختيار الثيم الأبيض
             let r = parseInt(themeColor.substr(1,2), 16);
             let g = parseInt(themeColor.substr(3,2), 16);
             let b = parseInt(themeColor.substr(5,2), 16);
