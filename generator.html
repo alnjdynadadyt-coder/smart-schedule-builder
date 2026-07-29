@@ -29,12 +29,17 @@
             color: var(--tch-color, #ffffff);
         }
 
+        /* تحسين وضوح خطوط الجداول بشكل قوي وواضح جداً */
+        table, th, td {
+            border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+        }
+
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
             .print-container { background: white !important; color: black !important; border: 1px solid #000 !important; box-shadow: none !important; }
             table { border-collapse: collapse !important; width: 100% !important; direction: rtl !important; }
-            th, td { border: 1px solid #000 !important; color: #000 !important; background-color: #fff !important; text-align: center !important; }
+            th, td { border: 1.5px solid #000 !important; color: #000 !important; background-color: #fff !important; text-align: center !important; }
         }
     </style>
 </head>
@@ -179,7 +184,6 @@
             if (globalMasterSchedule) renderCurrentView();
         }
 
-        // دالة جلب الاختصارات المتوافقة تماماً مع حقول الـ code في (المدرسين، المواد، الصفوف)
         function loadShortcuts() {
             let teachers = JSON.parse(localStorage.getItem('sch_teachers')) || [];
             let subjects = JSON.parse(localStorage.getItem('sch_subjects')) || [];
@@ -226,7 +230,8 @@
                 let classShort = classMap[className] || className; 
                 let sections = item.sections || [item.section];
                 sections.forEach(sec => {
-                    let key = `${classShort} - شعبة ${sec}`; 
+                    // تعديل التسمية لتصبح بالشكل المطلوب: (الصف - الشعبة) بدون كلمة شعبة
+                    let key = `${classShort} - ${sec}`; 
                     if (!sectionSchedules[key]) {
                         sectionSchedules[key] = {};
                         daysOfWeek.forEach(day => {
@@ -248,7 +253,7 @@
                 let excludedLessons = item.excludedLessons || [];
 
                 sections.forEach(sec => {
-                    let key = `${classShort} - شعبة ${sec}`; 
+                    let key = `${classShort} - ${sec}`; 
                     if (!sectionSchedules[key]) return;
 
                     let placed = 0;
@@ -390,21 +395,21 @@
                         <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 backdrop-blur-md mb-8">
                             <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-400">📅 جدول حصص: ${key}</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-center border-collapse text-sm border border-white/30" dir="rtl">
+                                <table class="w-full text-center border-collapse text-sm" dir="rtl">
                                     <thead>
-                                        <tr class="bg-black/30 border-b border-white/30 font-bold">
-                                            <th class="py-3 px-3 border border-white/30">اليوم / الحصة</th>`;
+                                        <tr class="bg-black/30 font-bold">
+                                            <th class="py-3 px-3">اليوم / الحصة</th>`;
                     for (let i = 1; i <= periodsCount; i++) {
-                        html += `<th class="py-3 px-2 border border-white/30">الدرس ${i}</th>`;
+                        html += `<th class="py-3 px-2">الدرس ${i}</th>`;
                     }
                     html += `</tr></thead><tbody>`;
 
                     daysOfWeek.forEach(day => {
-                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20">${day}</td>`;
+                        html += `<tr class="hover:bg-white/5"><td class="py-3 px-3 font-bold bg-black/20">${day}</td>`;
                         for (let p = 0; p < periodsCount; p++) {
                             let cell = schData[day][p];
                             let content = cell ? `<div style="line-height: 1.3;"><span class="custom-subject-style font-bold">${cell.subject}</span><br><span class="custom-teacher-style">${cell.teacher}</span></div>` : ``;
-                            html += `<td class="py-3 px-2 border border-white/30 h-16 align-middle">${content}</td>`;
+                            html += `<td class="py-3 px-2 h-16 align-middle">${content}</td>`;
                         }
                         html += `</tr>`;
                     });
@@ -419,21 +424,21 @@
                         <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 backdrop-blur-md mb-8">
                             <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-400">📅 جدول يوم: ${day} (كافة الشعب)</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-center border-collapse text-sm border border-white/30" dir="rtl">
+                                <table class="w-full text-center border-collapse text-sm" dir="rtl">
                                     <thead>
-                                        <tr class="bg-black/30 border-b border-white/30 font-bold">
-                                            <th class="py-3 px-3 border border-white/30">الصف والشعبة</th>`;
+                                        <tr class="bg-black/30 font-bold">
+                                            <th class="py-3 px-3">الصف والشعبة</th>`;
                     for (let i = 1; i <= periodsCount; i++) {
-                        html += `<th class="py-3 px-2 border border-white/30">الدرس ${i}</th>`;
+                        html += `<th class="py-3 px-2">الدرس ${i}</th>`;
                     }
                     html += `</tr></thead><tbody>`;
 
                     sectionKeys.forEach(secKey => {
-                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20">${secKey}</td>`;
+                        html += `<tr class="hover:bg-white/5"><td class="py-3 px-3 font-bold bg-black/20">${secKey}</td>`;
                         for (let p = 0; p < periodsCount; p++) {
                             let cell = globalMasterSchedule.sectionSchedules[secKey][day][p];
                             let content = cell ? `<div style="line-height: 1.3;"><span class="custom-subject-style font-bold">${cell.subject}</span><br><span class="custom-teacher-style">${cell.teacher}</span></div>` : ``;
-                            html += `<td class="py-3 px-2 border border-white/30 h-16 align-middle">${content}</td>`;
+                            html += `<td class="py-3 px-2 h-16 align-middle">${content}</td>`;
                         }
                         html += `</tr>`;
                     });
@@ -454,21 +459,21 @@
                         <div class="print-container p-6 rounded-2xl shadow-xl border bg-white/10 border-white/20 backdrop-blur-md mb-8">
                             <h3 class="text-xl font-bold mb-4 border-b pb-2 border-white/25 text-amber-400">👨‍🏫 جدول حصص المدرس: ${tch}</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-center border-collapse text-sm border border-white/30" dir="rtl">
+                                <table class="w-full text-center border-collapse text-sm" dir="rtl">
                                     <thead>
-                                        <tr class="bg-black/30 border-b border-white/30 font-bold">
-                                            <th class="py-3 px-3 border border-white/30">اليوم / الحصة</th>`;
+                                        <tr class="bg-black/30 font-bold">
+                                            <th class="py-3 px-3">اليوم / الحصة</th>`;
                     for (let i = 1; i <= periodsCount; i++) {
-                        html += `<th class="py-3 px-2 border border-white/30">الدرس ${i}</th>`;
+                        html += `<th class="py-3 px-2">الدرس ${i}</th>`;
                     }
                     html += `</tr></thead><tbody>`;
 
                     daysOfWeek.forEach(day => {
-                        html += `<tr class="border-b border-white/20 hover:bg-white/5"><td class="py-3 px-3 border border-white/30 font-bold bg-black/20">${day}</td>`;
+                        html += `<tr class="hover:bg-white/5"><td class="py-3 px-3 font-bold bg-black/20">${day}</td>`;
                         for (let p = 0; p < periodsCount; p++) {
                             let cell = tchData[day][p];
                             let content = cell ? `<div style="line-height: 1.3;"><span class="custom-subject-style font-bold">${cell.subject}</span><br><span class="custom-teacher-style">${cell.classInfo}</span></div>` : ``;
-                            html += `<td class="py-3 px-2 border border-white/30 h-16 align-middle">${content}</td>`;
+                            html += `<td class="py-3 px-2 h-16 align-middle">${content}</td>`;
                         }
                         html += `</tr>`;
                     });
@@ -501,7 +506,7 @@
             <style>
                 body { direction: rtl; text-align: right; font-family: 'Cairo', Arial, sans-serif; }
                 table { border-collapse: collapse; width: 100%; margin-bottom: 20px; direction: rtl; }
-                th, td { border: 1px solid windowtext; padding: 8px; text-align: center; font-size: 11pt; direction: rtl; }
+                th, td { border: 1.5px solid windowtext; padding: 8px; text-align: center; font-size: 11pt; direction: rtl; }
                 th { background-color: #f2f2f2; }
             </style>
             </head>
